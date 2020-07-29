@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7f0e05cdc480b449afa823a78aaf784, type: 3}
+  m_Name: New Narrative
+  m_EditorClassIdentifier: 
+  NodeLinks:
+  - BaseNodeGuid: eda317a0-ce15-4920-a78f-d2f769b24611
+    PortName: Next
+    TargetNodeGuid: 2f039f31-5952-47c4-8e7c-129eda11f1a1
+  - BaseNodeGuid: 2f039f31-5952-47c4-8e7c-129eda11f1a1
+    PortName: Output 1
+    TargetNodeGuid: f10e4518-a1e3-4187-9443-5e3f218d94e2
+  ActionNodeDatas:
+  - GUID: eda317a0-ce15-4920-a78f-d2f769b24611
+    DialogueText: ENTRYPOINT
+    Position:
+      serializedVersion: 2
+      x: 48
+      y: 259
+      width: 107
+      height: 77
+    NodeType: 0
+  - GUID: f10e4518-a1e3-4187-9443-5e3f218d94e2
+    DialogueText: 
+    Position:
+      serializedVersion: 2
+      x: 487
+      y: 250
+      width: 100
+      height: 77
+    NodeType: 1
+  - GUID: 2f039f31-5952-47c4-8e7c-129eda11f1a1
+    DialogueText: Action Node
+    Position:
+      serializedVersion: 2
+      x: 225
+      y: 107
+      width: 200
+      height: 77
+    NodeType: 2

@@ -1,0 +1,12 @@
+.grid {
+    --grid-background-color: rgb(45, 45, 45);
+    --line-color: rgba(255, 255, 255, 0.05);
+    --thick-line-color: rgba(255, 255, 255, 0.1);
+    --spacing: 25;
+}
+.exit #title {
+    background-color: #c60000;
+}
+.start #title {
+    background-color: #00ba00;
+}
