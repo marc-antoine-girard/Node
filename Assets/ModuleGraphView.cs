@@ -5,6 +5,7 @@ using Nodes;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 public enum NodeType // Soon Deprecated
 {
@@ -93,14 +94,20 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
                 }
             }
 
-            if (hasChanges)
+            if (hasChanges && !IsDirty)
             {
-                IsDirty = true;
-                window.titleContent = new GUIContent($"{ModuleGraph.DefaultName} *");
+                SetDirty();
             }
             
             return change;
         };
+    }
+
+    public void SetDirty()
+    {
+        if (IsDirty) return;
+        IsDirty = true;
+        window.titleContent = new GUIContent($"{ModuleGraph.DefaultName} *");
     }
 
     private void AddSearchWindow()

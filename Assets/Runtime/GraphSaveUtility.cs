@@ -52,7 +52,8 @@ public class GraphSaveUtility
                 Position = baseNode.GetPosition(),
                 NodeType = baseNode.NodeType,
                 OutputPortIDs = baseNode.OutputPortIDs,
-                Type = baseNode.Type
+                Type = baseNode.Type,
+                SerializedScript = baseNode.GetSerializedScript()
             });
         }
 
@@ -114,6 +115,7 @@ public class GraphSaveUtility
         foreach (var nodeData in containerCache.ActionNodeDatas)
         {
             var node = NodeFactory.CreateNode(nodeData);
+            
             node?.Draw(targetGraphView);
             // var node = BaseNode.Create(nodeData.title, nodeData.Position, nodeData.GUID, nodeData.OutputPortIDs, nodeData.NodeType);
 

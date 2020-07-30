@@ -2,11 +2,13 @@
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Nodes
 {
     public class ChangeSceneNode : BaseNode
     {
+        public new ChangeSceneModule Script = ScriptableObject.CreateInstance<ChangeSceneModule>();
         public ChangeSceneNode() {}
 
         public ChangeSceneNode(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType) : base(nodeName, position, guid, outputPortIDs, nodeType) { }
@@ -27,11 +29,29 @@ namespace Nodes
             outputPort.portName = "Output";
             outputContainer.Add(outputPort);
 
-            ObjectField a = new ObjectField();
-            a.objectType = typeof(GameObject);
-            extensionContainer.Add(a);
+            IntegerField intField = new IntegerField("Scene Index", 2);
+            intField.value = Script.SceneIndex;
+            intField.RegisterValueChangedCallback(evt =>
+            {
+                var temp = evt.newValue < 0 ? 0 : evt.newValue > 99 ? 99 : evt.newValue;
+                intField.SetValueWithoutNotify(temp);
+                Script.SceneIndex = temp;
+                graphView.SetDirty();
+            });
+            
+            extensionContainer.Add(intField);
+
             graphView.RefreshNode(this);
             graphView.AddElement(this);
+        }
+
+        public override string GetSerializedScript()
+        {
+            return JsonUtility.ToJson(Script);
+        }
+        public override void SetSerializedScript(string json)
+        {
+            JsonUtility.FromJsonOverwrite(json, Script);
         }
     }
 }

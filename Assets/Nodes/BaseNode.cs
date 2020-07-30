@@ -8,6 +8,8 @@ namespace Nodes
 {
     public class BaseNode : Node
     {
+        public BaseModule Script = ScriptableObject.CreateInstance<BaseModule>();
+
         public string GUID;
         public NodeType NodeType;
         public List<string> OutputPortIDs = new List<string>();
@@ -37,6 +39,15 @@ namespace Nodes
         protected virtual void DrawNode(ModuleGraphView graphView)
         {
             throw new NotImplementedException();
+        }
+
+        public virtual string GetSerializedScript()
+        {
+            return JsonUtility.ToJson(Script);
+        }
+        public virtual void SetSerializedScript(string json)
+        {
+            JsonUtility.FromJsonOverwrite(json, Script);
         }
     }
 }

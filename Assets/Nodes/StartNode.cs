@@ -6,12 +6,14 @@ namespace Nodes
 {
     public class StartNode : BaseNode
     {
-        public StartNode() { }
+        public new StartModule Script = ScriptableObject.CreateInstance<StartModule>();
+        
         public StartNode(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType) : base(nodeName, position, guid, outputPortIDs, nodeType) {}
     
-        public new static BaseNode Create(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType)
+        public new static StartNode Create(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType)
         {
-            return new StartNode(nodeName, position, guid, outputPortIDs, nodeType);
+            var node = new StartNode(nodeName, position, guid, outputPortIDs, nodeType);
+            return node;
         }
 
         protected override void DrawNode(ModuleGraphView graphView)
@@ -27,6 +29,11 @@ namespace Nodes
         
             graphView.RefreshNode(this);
             graphView.AddElement(this);
+        }
+        
+        public override string GetSerializedScript()
+        {
+            return JsonUtility.ToJson(Script);
         }
 
     }

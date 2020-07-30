@@ -10,24 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a7f0e05cdc480b449afa823a78aaf784, type: 3}
-  m_Name: New Narrative
+  m_Name: 234
   m_EditorClassIdentifier: 
   NodeLinks:
-  - BaseNodeGuid: 00deaa63-8763-430b-86fc-777d7e2eb96a
+  - BaseNodeGuid: 22512723-bc04-42f7-ba58-27af49368c49
     PortName: 
-    TargetNodeGuid: a3b293a4-8144-41b4-8992-861b5038a200
+    TargetNodeGuid: b42cf1a6-8d2d-434d-ae64-4dd90d023d02
+  - BaseNodeGuid: b42cf1a6-8d2d-434d-ae64-4dd90d023d02
+    PortName: 
+    TargetNodeGuid: 15b14485-b993-42fe-8b09-a25ef00ab3df
   ActionNodeDatas:
-  - GUID: 00deaa63-8763-430b-86fc-777d7e2eb96a
-    Position:
-      serializedVersion: 2
-      x: 100
-      y: 200
-      width: 107
-      height: 77
-    NodeType: 2
-    OutputPortIDs: []
-    SerializedScript: '{"Delay":0,"test":5}'
-  - GUID: 327dfa0f-547c-47a2-a6e9-09673d6d9f9f
+  - GUID: 15b14485-b993-42fe-8b09-a25ef00ab3df
     Position:
       serializedVersion: 2
       x: 500
@@ -36,14 +29,24 @@ MonoBehaviour:
       height: 77
     NodeType: 2
     OutputPortIDs: []
-    SerializedScript: '{"Delay":0}'
-  - GUID: a3b293a4-8144-41b4-8992-861b5038a200
+    SerializedScript: 
+  - GUID: b42cf1a6-8d2d-434d-ae64-4dd90d023d02
     Position:
       serializedVersion: 2
-      x: 252
-      y: 218
-      width: 186
-      height: 99
+      x: 289
+      y: 309
+      width: 158
+      height: 98
     NodeType: 2
     OutputPortIDs: []
-    SerializedScript: '{"Delay":0,"SceneIndex":35}'
+    SerializedScript: 
+  - GUID: 22512723-bc04-42f7-ba58-27af49368c49
+    Position:
+      serializedVersion: 2
+      x: 91
+      y: 327
+      width: 107
+      height: 77
+    NodeType: 2
+    OutputPortIDs: []
+    SerializedScript: 

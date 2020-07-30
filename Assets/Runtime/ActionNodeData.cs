@@ -11,4 +11,5 @@ public class ActionNodeData
     public NodeType NodeType;
     public List<string> OutputPortIDs;
     public Type Type;
+    public string SerializedScript;
 }

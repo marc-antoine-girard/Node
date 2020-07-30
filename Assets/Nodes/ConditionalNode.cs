@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Nodes
 {
@@ -27,7 +28,9 @@ namespace Nodes
             var Failure = graphView.GeneratePort<float>(this, Direction.Output);
             Failure.portName = "Failure";
             outputContainer.Add(Failure);
-        
+
+            Debug.Log(Failure.name);
+            
             graphView.RefreshNode(this);
             graphView.AddElement(this);
         }

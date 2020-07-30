@@ -48,7 +48,8 @@ public class NodeFactory
         {
             throw new NotImplementedException("Node type not implemented in NodeFactory");
         }
-        
+
+        node?.SetSerializedScript(aData.SerializedScript);
         return node;
     }
 }
