@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
@@ -11,35 +12,36 @@ public class ModuleGraph : EditorWindow
 {
     public static ModuleGraphView graphView;
     public static string filename = "New Narrative";
+    public static readonly string DefaultName = "Chapter Graph";
 
-    public static bool contruct = false;
     [MenuItem("Graph/Dialogue Graph")]
     public static void OpenDialogueGraphWindow()
     {
         var window = GetWindow<ModuleGraph>();
-        window.titleContent = new GUIContent("Action");
+        window.titleContent = new GUIContent(DefaultName);
     }
 
     private void OnEnable()
     {
-        if (!contruct)
+        if (graphView == null)
         {
             ConstructGraphView();
         }
         else
         {
             rootVisualElement.Add(graphView);
+            graphView.StretchToParentSize();
+            rootVisualElement.MarkDirtyRepaint();
         }
         GenerateToolbar();
     }
     
     private void ConstructGraphView()
     {
-        graphView = new ModuleGraphView
+        graphView = new ModuleGraphView(this)
         {
             name = "Module Graph"
         };
-        contruct = true;
         graphView.StretchToParentSize();
         rootVisualElement.Add(graphView);
     }
@@ -52,7 +54,6 @@ public class ModuleGraph : EditorWindow
         var fileNameTextField = new TextField("");
         fileNameTextField.style.backgroundColor = new StyleColor(Color.black);
         fileNameTextField.SetValueWithoutNotify(filename);
-        fileNameTextField.MarkDirtyRepaint();
         fileNameTextField.RegisterCallback<ChangeEvent<string>>(evt => { filename = evt.newValue;});
         toolbar.Add(fileNameTextField);
         #endregion
@@ -62,18 +63,8 @@ public class ModuleGraph : EditorWindow
         toolbar.Add(new Button(() => RequestDataOperation(false)){text = "Load"});
         #endregion
         
-        #region CreateNode
-        var nodeCreateButton = new Button(() =>
-        {
-            graphView.CreateNode("Action Node");
-        });
-        nodeCreateButton.text = "Create Node";
-        toolbar.Add(nodeCreateButton);
-        #endregion
-        
         #region Grid Checkbox
         var activateGrid = new Toggle();
-        activateGrid.MarkDirtyRepaint();
         activateGrid.RegisterCallback((ChangeEvent<bool> e) => { graphView.ToggleGrid(e.newValue);});
         // activateGrid.RegisterCallback<ChangeEvent<bool>>(e => { graphView.ToggleGrid(e.newValue);});
         
@@ -81,7 +72,16 @@ public class ModuleGraph : EditorWindow
         graphView.ToggleGrid(true);
         toolbar.Add(activateGrid);
         #endregion
+
+        //Should iterate through ActionModuleGroup
+        var toolbarMenu = new ToolbarMenu {text = "Groups"};
+        toolbarMenu.menu.AppendAction("Groups", action => { toolbarMenu.text = action.name; }, 
+            a => DropdownMenuAction.Status.Disabled, default);
+        toolbarMenu.menu.AppendAction("test", action => { toolbarMenu.text = action.name; }, 
+            a => DropdownMenuAction.Status.Checked, default);
+        toolbar.Add(toolbarMenu);
         
+        toolbar.MarkDirtyRepaint();
         //Adds toolbar to window
         rootVisualElement.Add(toolbar);
     }
@@ -95,11 +95,16 @@ public class ModuleGraph : EditorWindow
         }
 
         var saveUtility = GraphSaveUtility.GetInstance(graphView);
-        if(save)
+        if (save && graphView.IsDirty)
+        {
             saveUtility.SaveGraph(filename);
+            titleContent = new GUIContent(DefaultName);
+        }
         else
             saveUtility.LoadGraph(filename);
     }
+    
+    
     
 
 }

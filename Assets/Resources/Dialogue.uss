@@ -10,3 +10,7 @@
 .start #title {
     background-color: #00ba00;
 }
+
+.action #title {
+}
+

@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7f0e05cdc480b449afa823a78aaf784, type: 3}
+  m_Name: test
+  m_EditorClassIdentifier: 
+  NodeLinks:
+  - BaseNodeGuid: 03fe9aae-e5af-4b18-8d15-4c16dae3b03d
+    PortName: 
+    TargetNodeGuid: 5df55066-9949-4455-b4d1-1c839c4b4c47
+  - BaseNodeGuid: 5df55066-9949-4455-b4d1-1c839c4b4c47
+    PortName: 77cccab0-37cf-4d74-baa1-4e21efb3efca
+    TargetNodeGuid: f1935d3c-0f60-40b8-9014-149e88beba52
+  ActionNodeDatas:
+  - GUID: 03fe9aae-e5af-4b18-8d15-4c16dae3b03d
+    title: Start Node
+    Position:
+      serializedVersion: 2
+      x: 100
+      y: 200
+      width: 107
+      height: 77
+    NodeType: 0
+    OutputPortIDs: []
+  - GUID: f1935d3c-0f60-40b8-9014-149e88beba52
+    title: Exit Node
+    Position:
+      serializedVersion: 2
+      x: 430
+      y: 275
+      width: 100
+      height: 77
+    NodeType: 1
+    OutputPortIDs: []
+  - GUID: 5df55066-9949-4455-b4d1-1c839c4b4c47
+    title: Multi
+    Position:
+      serializedVersion: 2
+      x: 212
+      y: 139
+      width: 158
+      height: 102
+    NodeType: 4
+    OutputPortIDs:
+    - 77cccab0-37cf-4d74-baa1-4e21efb3efca
+    - 5cb19b60-8440-4a82-accd-a386b815e272
+    - 1003bc76-ece8-4031-b36b-77edb0635942
+    - f3d6450e-ff51-4192-8e91-f765cd80d6a5
+    - 2d219bf7-09a9-4729-9320-da2214356b9a
+    - d1b173b0-49ef-4679-8ca2-26f71e87ddf8
+    - d4838bcd-4a25-4a51-bba5-a6bca1eb2e60
+    - f7067c66-8318-4050-895f-3d315808f6cb

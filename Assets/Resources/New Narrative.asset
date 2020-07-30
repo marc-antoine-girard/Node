@@ -13,37 +13,40 @@ MonoBehaviour:
   m_Name: New Narrative
   m_EditorClassIdentifier: 
   NodeLinks:
-  - BaseNodeGuid: eda317a0-ce15-4920-a78f-d2f769b24611
-    PortName: Next
-    TargetNodeGuid: 2f039f31-5952-47c4-8e7c-129eda11f1a1
-  - BaseNodeGuid: 2f039f31-5952-47c4-8e7c-129eda11f1a1
-    PortName: Output 1
-    TargetNodeGuid: f10e4518-a1e3-4187-9443-5e3f218d94e2
+  - BaseNodeGuid: 615cf75a-a6e7-4492-9eec-4e86573e04a0
+    PortName: 
+    TargetNodeGuid: 6bd9d434-0a56-41a9-bc00-9b4463f75994
+  - BaseNodeGuid: 6bd9d434-0a56-41a9-bc00-9b4463f75994
+    PortName: 
+    TargetNodeGuid: 245c2908-1152-44b2-b2bd-5de020f98dae
   ActionNodeDatas:
-  - GUID: eda317a0-ce15-4920-a78f-d2f769b24611
-    DialogueText: ENTRYPOINT
+  - GUID: 245c2908-1152-44b2-b2bd-5de020f98dae
+    title: Exit Node
     Position:
       serializedVersion: 2
-      x: 48
-      y: 259
-      width: 107
-      height: 77
-    NodeType: 0
-  - GUID: f10e4518-a1e3-4187-9443-5e3f218d94e2
-    DialogueText: 
-    Position:
-      serializedVersion: 2
-      x: 487
-      y: 250
+      x: 534
+      y: 196
       width: 100
       height: 77
     NodeType: 1
-  - GUID: 2f039f31-5952-47c4-8e7c-129eda11f1a1
-    DialogueText: Action Node
+    OutputPortIDs: []
+  - GUID: 615cf75a-a6e7-4492-9eec-4e86573e04a0
+    title: Start Node
     Position:
       serializedVersion: 2
-      x: 225
-      y: 107
-      width: 200
+      x: 177
+      y: 200
+      width: 107
       height: 77
+    NodeType: 0
+    OutputPortIDs: []
+  - GUID: 6bd9d434-0a56-41a9-bc00-9b4463f75994
+    title: Action
+    Position:
+      serializedVersion: 2
+      x: 336
+      y: 184
+      width: 158
+      height: 97
     NodeType: 2
+    OutputPortIDs: []

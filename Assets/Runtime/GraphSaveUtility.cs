@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -20,9 +22,9 @@ public class GraphSaveUtility
         };
     }
 
-    public void SaveGraph(string fileName)
+    public bool SaveGraph(string fileName)
     {
-        if (!edges.Any()) return;
+        if (!edges.Any()) return false;
 
         var actionContainer = ScriptableObject.CreateInstance<ActionContainer>();
 
@@ -36,19 +38,21 @@ public class GraphSaveUtility
             actionContainer.NodeLinks.Add(new NodeLinkData
             {
                 BaseNodeGuid = outputNode.GUID,
-                PortName = edge.output.portName,
+                PortName = edge.output.name,
                 TargetNodeGuid = inputNode.GUID
             });
         }
 
-        foreach (var dialogueNode in nodes)
+        foreach (var baseNode in nodes)
         {
             actionContainer.ActionNodeDatas.Add(new ActionNodeData
             {
-                GUID = dialogueNode.GUID,
-                DialogueText = dialogueNode.DialogueText,
-                Position = dialogueNode.GetPosition(),
-                NodeType = dialogueNode.NodeType
+                GUID = baseNode.GUID,
+                title = baseNode.title,
+                Position = baseNode.GetPosition(),
+                NodeType = baseNode.NodeType,
+                OutputPortIDs = baseNode.OutputPortIDs,
+                Type = baseNode.Type
             });
         }
 
@@ -58,6 +62,8 @@ public class GraphSaveUtility
         
         AssetDatabase.CreateAsset(actionContainer, $"Assets/Resources/{fileName}.asset");
         AssetDatabase.SaveAssets();
+
+        return true;
     }
     public void LoadGraph(string fileName)
     {
@@ -73,7 +79,6 @@ public class GraphSaveUtility
         ClearGraph();
         CreateNodes();
         ConnectNodes();
-
     }
 
     private void ConnectNodes()
@@ -81,13 +86,12 @@ public class GraphSaveUtility
         for (int i = 0; i < nodes.Count; i++)
         {
             var connections = containerCache.NodeLinks.Where(x => x.BaseNodeGuid == nodes[i].GUID).ToList();
+            var outputPorts = nodes[i].outputContainer.Children().ToList().Where(x => x.Q<Port>() != null).Cast<Port>().ToList();
             for (int j = 0; j < connections.Count; j++)
             {
                 var targetNodeGuid = connections[j].TargetNodeGuid;
                 var targetNode = nodes.First(x => x.GUID == targetNodeGuid);
-                LinkNodes((Port) targetNode.inputContainer[0], nodes[i].outputContainer[j].Q<Port>());
-
-                targetNode.SetPosition(containerCache.ActionNodeDatas.First(x => x.GUID == targetNodeGuid).Position);
+                LinkNodes((Port) targetNode.inputContainer[0], outputPorts[j]);
             }
         }
     }
@@ -100,8 +104,8 @@ public class GraphSaveUtility
             output = output
         };
         
-        tempEdge?.input.Connect(tempEdge);
-        tempEdge?.output.Connect(tempEdge);
+        tempEdge?.input?.Connect(tempEdge);
+        tempEdge?.output?.Connect(tempEdge);
         targetGraphView.Add(tempEdge);
     }
 
@@ -109,11 +113,13 @@ public class GraphSaveUtility
     {
         foreach (var nodeData in containerCache.ActionNodeDatas)
         {
-            var tempNode = targetGraphView.CreateNode(nodeData.DialogueText, nodeData.NodeType);
-            tempNode.GUID = nodeData.GUID;
+            var node = NodeFactory.CreateNode(nodeData);
+            node?.Draw(targetGraphView);
+            // var node = BaseNode.Create(nodeData.title, nodeData.Position, nodeData.GUID, nodeData.OutputPortIDs, nodeData.NodeType);
 
-            var nodePorts = containerCache.NodeLinks.Where(x => x.BaseNodeGuid == nodeData.GUID).ToList();
-            nodePorts.ForEach(x => targetGraphView.AddChoicePort(tempNode, x.PortName));
+            // var nodePorts = containerCache.NodeLinks.Where(x => x.BaseNodeGuid == nodeData.GUID).ToList();
+            // nodePorts.ForEach(x => targetGraphView.AddChoicePort(tempNode, x.PortName));
+
         }
     }
 

@@ -1,22 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 public enum NodeType
 {
-    Start, Exit, Action
+    Start, Exit, Action, Conditional, Multi, Random
 }
+
 [Serializable]
-public class ModuleGraphView : GraphView
+public class ModuleGraphView : GraphView, IEdgeConnectorListener
 {
-    public readonly Vector2 defaultNodeSize = new Vector2(150, 200);
+    public readonly Vector2 defaultNodeSize = new Vector2(400, 400);
+    public bool IsDirty;
+    public UnityEvent OnElementChange = new UnityEvent();
     private StyleSheet gridStyle;
     private GridBackground grid;
-    public ModuleGraphView()
+    private NodeSearchWindow searchWindow;
+    private EditorWindow window;
+    public Edge tempEdge;
+    public Port tempPort;
+    public ModuleGraphView(EditorWindow window)
     {
+        this.window = window;
         gridStyle = Resources.Load<StyleSheet>("Dialogue");
         SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
         
@@ -28,29 +38,92 @@ public class ModuleGraphView : GraphView
         styleSheets.Add(gridStyle);
         Insert(0, grid);
         grid.StretchToParentSize();
-        AddElement(GenerateEntryPointNode());
-        AddElement(GenerateExitPointNode());
-    }
+        AddElement(GenerateEntryPointNode(new BaseNode {NodeType = NodeType.Start}));
+        AddElement(GenerateExitPointNode(new BaseNode {NodeType = NodeType.Exit}));
 
-    private Port GeneratePort<T>(BaseNode node, Direction portDirection, Port.Capacity capacity = Port.Capacity.Single)
-    {
-        return node.InstantiatePort(Orientation.Horizontal, portDirection, capacity, typeof(T));
-    }
-
-    private BaseNode GenerateEntryPointNode()
-    {
-        var node = new BaseNode
+        
+        AddSearchWindow();
+        LiveChangeActionModule();
+        OnElementChange.AddListener(() =>
         {
-            title = "Start Node",
-            name = "test",
-            GUID = Guid.NewGuid().ToString(),
-            DialogueText = "ENTRYPOINT",
-            EntryPoint = true,
-            NodeType = NodeType.Start
+            IsDirty = true;
+            window.titleContent = new GUIContent($"{ModuleGraph.DefaultName} *");
+        });
+    }
+
+    public void LiveChangeActionModule()
+    {
+        bool hasChanges = false;
+        graphViewChanged += change =>
+        {
+            if (change.elementsToRemove != null)
+            {
+                foreach (var element in change.elementsToRemove)
+                {
+                    if (element is Edge)
+                    {
+                        hasChanges = true;
+                        //Disconnect ActionModules in Live
+                    }
+                }
+            }
+
+            if (change.edgesToCreate != null)
+            {
+                foreach (var element in change.edgesToCreate)
+                {
+                    hasChanges = true;
+                }
+            }
+
+            if (change.movedElements != null)
+            {
+                foreach (var element in change.movedElements)
+                {
+                    hasChanges = true;
+                }
+            }
+
+            if (hasChanges)
+                OnElementChange.Invoke();
+            
+            return change;
         };
+    }
+
+    private void AddSearchWindow()
+    {
+        searchWindow = ScriptableObject.CreateInstance<NodeSearchWindow>();
+        searchWindow.Init(window,this);
+        nodeCreationRequest = context =>
+            SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), searchWindow);
+    }
+
+    public Port GeneratePort(BaseNode node, Direction portDirection, Type type, Port.Capacity capacity = Port.Capacity.Single)
+    {
+        var port = node.InstantiatePort(Orientation.Horizontal, portDirection, capacity, type);
+        
+        // This is needed to handle the nodesearchwindow with edge drag
+        port.RegisterCallback<MouseDownEvent>(evt => { tempPort = port; });
+        // When the edge is dropped outside a node, OnDropOutsidePort is called
+        // This does not work without the interface IEdgeConnectorListener
+        port.AddManipulator(new EdgeConnector<Edge>(this));
+        return port;
+    }
+    
+    public Port GeneratePort<T>(BaseNode node, Direction portDirection, Port.Capacity capacity = Port.Capacity.Single)
+    {
+        return GeneratePort(node, portDirection, typeof(T), capacity);
+    }
+
+    private BaseNode GenerateEntryPointNode(BaseNode node)
+    {
+        if (string.IsNullOrEmpty(node.GUID))
+            node = BaseNode.Create("Start Node", new Rect(100, 200, 100, 150),
+                Guid.NewGuid().ToString(), new List<string>(), NodeType.Start);
+
         node.AddToClassList("start");
         var generatedPort = GeneratePort<float>(node, Direction.Output, Port.Capacity.Multi);
-        
         generatedPort.portName = "Next";
         node.outputContainer.Add(generatedPort);
         
@@ -59,78 +132,113 @@ public class ModuleGraphView : GraphView
         node.capabilities &= ~Capabilities.Renamable;
         
         RefreshNode(node);
-        node.SetPosition(new Rect(100, 200, 100, 150));
         return node;
     }
 
-    private BaseNode GenerateExitPointNode()
+    private BaseNode GenerateExitPointNode(BaseNode node)
     {
-        var node = new BaseNode
-        {
-            title = "Exit Node",
-            GUID = Guid.NewGuid().ToString(),
-            ExitPoint = true,
-            NodeType = NodeType.Exit
-        };
+        if (string.IsNullOrEmpty(node.GUID))
+            node = BaseNode.Create("Exit Node", new Rect(300, 200, 100, 150),
+                Guid.NewGuid().ToString(), new List<string>(), NodeType.Exit);
+        
         node.AddToClassList("exit");
         var generatedPort = GeneratePort<float>(node, Direction.Input, Port.Capacity.Multi);
         generatedPort.portName = "Exit";
+        
         node.inputContainer.Add(generatedPort);
 
         node.capabilities &= ~Capabilities.Deletable;
         node.capabilities &= ~Capabilities.Copiable;
         node.capabilities &= ~Capabilities.Renamable;
         node.capabilities &= ~Capabilities.Resizable;
-
         
         RefreshNode(node);
-        node.SetPosition(new Rect(300, 200, 100, 150));
         return node;
     }
 
-    public BaseNode CreateNode(string nodeName, NodeType nodeType = NodeType.Action)
+    public BaseNode CreateMultiNode(BaseNode node)
     {
-        BaseNode node;
-        switch (nodeType)
-        {
-            case NodeType.Action:
-                node = CreateActionNode(nodeName);
-                break;
-            case NodeType.Start:
-                node = GenerateEntryPointNode();
-                break;
-            case NodeType.Exit:
-                node = GenerateExitPointNode();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(nodeType), nodeType, null);
-        }
-        AddElement(node);
-        return node;
-    }
-    public BaseNode CreateActionNode(string nodeName)
-    {
-        var dialogueNode = new BaseNode
-        {
-            title = nodeName,
-            DialogueText = nodeName,
-            GUID = Guid.NewGuid().ToString(),
-            NodeType = NodeType.Action
-        };
-
-        var inputPort = GeneratePort<float>(dialogueNode, Direction.Input, Port.Capacity.Multi);
+        var inputPort = GeneratePort<float>(node, Direction.Input, Port.Capacity.Multi);
         inputPort.portName = "Input";
-        dialogueNode.inputContainer.Add(inputPort);
+        node.inputContainer.Add(inputPort);
+        node.titleContainer.Insert(1, new Button(() =>
+        {
+            node.OutputPortIDs.Add(AddMultiRow(node).name);
+        }){ text = "Add", style = { flexGrow = 0}});
         
-        var outputPort = GeneratePort<float>(dialogueNode, Direction.Output);
-        outputPort.portName = "Output";
-        dialogueNode.outputContainer.Add(outputPort);
+        foreach (var guid in node.OutputPortIDs)
+        {
+            var outputPort = GeneratePort<float>(node, Direction.Output);
+            outputPort.portName = "Output";
+            outputPort.name = guid;
+            var deleteButton = new Button(() =>
+            {
+                node.OutputPortIDs.Remove(outputPort.name);
+                RemovePort(node, outputPort);
+                RefreshNode(node);
+            }){ text = "-", style = { width = 10}};
+            outputPort.contentContainer.Add(deleteButton);
+            node.outputContainer.Add(outputPort);
+        }
+        
+        RefreshNode(node);
+        return node;
+    }
+    
+    public Port AddMultiRow(BaseNode node)
+    {
+        var temp = GeneratePort<float>(node, Direction.Output);
+        temp.portName = "Output";
+        temp.name = Guid.NewGuid().ToString();
+        var deleteButton = new Button(() =>
+        {
+            node.OutputPortIDs.Remove(temp.name);
+            RemovePort(node, temp);
+            RefreshNode(node);
+        }){ text = "-", style = { width = 10}};
+        temp.contentContainer.Add(deleteButton);
+        node.outputContainer.Add(temp);
+        RefreshNode(node);
+        return temp;
+    }
 
-        AddElement(dialogueNode);
+    public void RemovePort(BaseNode node, Port generatedPort)
+    {
+        var targetEdge = edges.ToList().Where(x =>
+            x.output.name == generatedPort.name && x.output.node == generatedPort.node);
+
+        if (!targetEdge.Any())
+        {
+            RemoveElement(generatedPort);
+            return;
+        }
+
+        var edge = targetEdge.First();
+        edge.input.Disconnect(edge);
+        RemoveElement(targetEdge.First());
         
-        RefreshNode(dialogueNode);
-        dialogueNode.SetPosition(new Rect(Vector2.zero, defaultNodeSize));
-        return dialogueNode;
+        node.outputContainer.Remove(generatedPort);
+        RefreshNode(node);
+        MarkDirtyRepaint();
+    }
+
+
+    public BaseNode CreateActionNode(BaseNode node)
+    {
+        var inputPort = GeneratePort<float>(node, Direction.Input, Port.Capacity.Multi);
+        inputPort.portName = "Input";
+        node.inputContainer.Add(inputPort);
+        node.AddToClassList("action");
+
+        var outputPort = GeneratePort<float>(node, Direction.Output);
+        outputPort.portName = "Output";
+        node.outputContainer.Add(outputPort);
+
+        ObjectField a = new ObjectField();
+        a.objectType = typeof(GameObject);
+        node.mainContainer.Add(a);
+        RefreshNode(node);
+        return node;
     }
 
     public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
@@ -139,7 +247,8 @@ public class ModuleGraphView : GraphView
         ports.ForEach(port =>
         {
             if (startPort.node != port.node)
-                if(!(startPort.direction == Direction.Output && port.direction == Direction.Output))
+                if(!(startPort.direction == Direction.Output && port.direction == Direction.Output) 
+                && !(startPort.direction == Direction.Input && port.direction == Direction.Input))
                     compatiblePorts.Add(port);
         });
         return compatiblePorts;
@@ -181,9 +290,30 @@ public class ModuleGraphView : GraphView
             grid.RemoveFromClassList("grid");
     }
     
-    public static void RefreshNode(Node node)
+    public void RefreshNode(Node node)
     {
         node.RefreshExpandedState();
         node.RefreshPorts();
     }
+
+    public void OnDropOutsidePort(Edge edge, Vector2 position)
+    {
+        //Remove this line if you want bidirectional trigger
+        if (tempPort.direction == Direction.Input) return;
+        
+        tempEdge = edge;
+        //Add NodeSearchView Here
+        nodeCreationRequest.Invoke(new NodeCreationContext
+        {
+            index = 1,
+            target = this,
+            screenMousePosition = Event.current.mousePosition + window.position.position
+        });
+    }
+
+    public void OnDrop(GraphView graphView, Edge edge)
+    {
+    }
+    
+    
 }

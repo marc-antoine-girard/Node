@@ -13,11 +13,40 @@ MonoBehaviour:
   m_Name: wwww
   m_EditorClassIdentifier: 
   NodeLinks:
-  - BaseNodeGuid: 05e2aaa1-7fbe-4fa2-8335-13f405f6a545
+  - BaseNodeGuid: 2c1e41f9-c919-44e7-b807-1c7a39023e3c
     PortName: Next
-    TargetNodeGuid: 2d9fe270-caf7-4110-9afb-99174967b381
+    TargetNodeGuid: f317e581-8042-49b6-bfbb-21fe6a40732c
+  - BaseNodeGuid: f317e581-8042-49b6-bfbb-21fe6a40732c
+    PortName: Output
+    TargetNodeGuid: eacf371a-4506-4fc4-85d6-1548f6647881
   ActionNodeDatas:
-  - GUID: 2d9fe270-caf7-4110-9afb-99174967b381
+  - GUID: 2c1e41f9-c919-44e7-b807-1c7a39023e3c
+    DialogueText: ENTRYPOINT
+    Position:
+      serializedVersion: 2
+      x: 4
+      y: 76
+      width: 107
+      height: 77
+    NodeType: 0
+    SerializedClass: 
+  - GUID: eacf371a-4506-4fc4-85d6-1548f6647881
     DialogueText: 
-    Position: {x: 416, y: 101}
+    Position:
+      serializedVersion: 2
+      x: 323
+      y: 88
+      width: 100
+      height: 77
     NodeType: 1
+    SerializedClass: 
+  - GUID: f317e581-8042-49b6-bfbb-21fe6a40732c
+    DialogueText: Action Node
+    Position:
+      serializedVersion: 2
+      x: 144
+      y: 222
+      width: 136
+      height: 77
+    NodeType: 2
+    SerializedClass: 
