@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
-using UnityEditor.Experimental.GraphView;
+﻿using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -13,7 +8,6 @@ public class ModuleGraph : EditorWindow
     public static ModuleGraphView graphView;
     public static string filename = "New Narrative";
     public static readonly string DefaultName = "Chapter Graph";
-
     [MenuItem("Graph/Dialogue Graph")]
     public static void OpenDialogueGraphWindow()
     {
@@ -23,16 +17,7 @@ public class ModuleGraph : EditorWindow
 
     private void OnEnable()
     {
-        if (graphView == null)
-        {
-            ConstructGraphView();
-        }
-        else
-        {
-            rootVisualElement.Add(graphView);
-            graphView.StretchToParentSize();
-            rootVisualElement.MarkDirtyRepaint();
-        }
+        ConstructGraphView();
         GenerateToolbar();
     }
     
@@ -97,8 +82,11 @@ public class ModuleGraph : EditorWindow
         var saveUtility = GraphSaveUtility.GetInstance(graphView);
         if (save && graphView.IsDirty)
         {
-            saveUtility.SaveGraph(filename);
-            titleContent = new GUIContent(DefaultName);
+            if (saveUtility.SaveGraph(filename))
+            {
+                titleContent = new GUIContent(DefaultName);
+                graphView.IsDirty = false;
+            }
         }
         else
             saveUtility.LoadGraph(filename);

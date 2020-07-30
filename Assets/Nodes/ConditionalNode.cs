@@ -15,11 +15,10 @@ namespace Nodes
     
         public new static ConditionalNode Create(string nodeName, Rect position, string guid, List<string> OutputPortIDs, NodeType nodeType)
         {
-            var startNode = new ConditionalNode(nodeName, position, guid, OutputPortIDs, nodeType);
-            return startNode;
+            return new ConditionalNode(nodeName, position, guid, OutputPortIDs, nodeType);
         }
-    
-        public override void DrawNode(ModuleGraphView graphView)
+
+        protected override void DrawNode(ModuleGraphView graphView)
         {
             var inputPort = graphView.GeneratePort<float>(this, Direction.Input, Port.Capacity.Multi);
             inputPort.portName = "Input";

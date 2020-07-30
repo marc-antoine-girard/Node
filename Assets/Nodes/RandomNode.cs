@@ -6,18 +6,18 @@ using UnityEngine.UIElements;
 
 namespace Nodes
 {
-    public class MultiNode : BaseNode
+    public class RandomNode : BaseNode
     {
-        public MultiNode()
+        public RandomNode()
         {
         }
-        public MultiNode(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType) : base(nodeName, position, guid, outputPortIDs, nodeType)
+        public RandomNode(string nodeName, Rect  position, string guid, List<string> outputPortIDs, NodeType nodeType) : base(nodeName, position, guid, outputPortIDs, nodeType)
         {
         }
     
-        public new static MultiNode Create(string nodeName, Rect position, string guid, List<string> OutputPortIDs, NodeType nodeType)
+        public new static RandomNode Create(string nodeName, Rect position, string guid, List<string> OutputPortIDs, NodeType nodeType)
         {
-            return new MultiNode(nodeName, position, guid, OutputPortIDs, nodeType);
+            return new RandomNode(nodeName, position, guid, OutputPortIDs, nodeType);
         }
 
         protected override void DrawNode(ModuleGraphView graphView)
@@ -42,7 +42,7 @@ namespace Nodes
             graphView.RefreshNode(this);
             graphView.AddElement(this);
         }
-        private Port AddMultiRow(MultiNode node, ModuleGraphView graphView)
+        private Port AddMultiRow(RandomNode node, ModuleGraphView graphView)
         {
             var temp = graphView.GeneratePort<float>(node, Direction.Output);
             temp.portName = "Output";

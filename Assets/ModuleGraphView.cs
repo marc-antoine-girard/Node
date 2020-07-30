@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Nodes;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UIElements;
-public enum NodeType
+public enum NodeType // Soon Depricated
 {
     Start, Exit, Action, Conditional, Multi, Random
 }
@@ -16,8 +15,7 @@ public enum NodeType
 public class ModuleGraphView : GraphView, IEdgeConnectorListener
 {
     public readonly Vector2 defaultNodeSize = new Vector2(400, 400);
-    public bool IsDirty;
-    public UnityEvent OnElementChange = new UnityEvent();
+    public bool IsDirty = false;
     private StyleSheet gridStyle;
     private GridBackground grid;
     private NodeSearchWindow searchWindow;
@@ -44,13 +42,11 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
         
         AddSearchWindow();
         LiveChangeActionModule();
-        OnElementChange.AddListener(() =>
-        {
-            IsDirty = true;
-            window.titleContent = new GUIContent($"{ModuleGraph.DefaultName} *");
-        });
     }
 
+    /// <summary>
+    /// May be used to make live changes on ActionModule
+    /// </summary>
     public void LiveChangeActionModule()
     {
         bool hasChanges = false;
@@ -85,7 +81,10 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
             }
 
             if (hasChanges)
-                OnElementChange.Invoke();
+            {
+                IsDirty = true;
+                window.titleContent = new GUIContent($"{ModuleGraph.DefaultName} *");
+            }
             
             return change;
         };
@@ -156,52 +155,6 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
         return node;
     }
 
-    public BaseNode CreateMultiNode(BaseNode node)
-    {
-        var inputPort = GeneratePort<float>(node, Direction.Input, Port.Capacity.Multi);
-        inputPort.portName = "Input";
-        node.inputContainer.Add(inputPort);
-        node.titleContainer.Insert(1, new Button(() =>
-        {
-            node.OutputPortIDs.Add(AddMultiRow(node).name);
-        }){ text = "Add", style = { flexGrow = 0}});
-        
-        foreach (var guid in node.OutputPortIDs)
-        {
-            var outputPort = GeneratePort<float>(node, Direction.Output);
-            outputPort.portName = "Output";
-            outputPort.name = guid;
-            var deleteButton = new Button(() =>
-            {
-                node.OutputPortIDs.Remove(outputPort.name);
-                RemovePort(node, outputPort);
-                RefreshNode(node);
-            }){ text = "-", style = { width = 10}};
-            outputPort.contentContainer.Add(deleteButton);
-            node.outputContainer.Add(outputPort);
-        }
-        
-        RefreshNode(node);
-        return node;
-    }
-    
-    public Port AddMultiRow(BaseNode node)
-    {
-        var temp = GeneratePort<float>(node, Direction.Output);
-        temp.portName = "Output";
-        temp.name = Guid.NewGuid().ToString();
-        var deleteButton = new Button(() =>
-        {
-            node.OutputPortIDs.Remove(temp.name);
-            RemovePort(node, temp);
-            RefreshNode(node);
-        }){ text = "-", style = { width = 10}};
-        temp.contentContainer.Add(deleteButton);
-        node.outputContainer.Add(temp);
-        RefreshNode(node);
-        return temp;
-    }
-
     public void RemovePort(BaseNode node, Port generatedPort)
     {
         var targetEdge = edges.ToList().Where(x =>
@@ -220,25 +173,6 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
         node.outputContainer.Remove(generatedPort);
         RefreshNode(node);
         MarkDirtyRepaint();
-    }
-
-
-    public BaseNode CreateActionNode(BaseNode node)
-    {
-        var inputPort = GeneratePort<float>(node, Direction.Input, Port.Capacity.Multi);
-        inputPort.portName = "Input";
-        node.inputContainer.Add(inputPort);
-        node.AddToClassList("action");
-
-        var outputPort = GeneratePort<float>(node, Direction.Output);
-        outputPort.portName = "Output";
-        node.outputContainer.Add(outputPort);
-
-        ObjectField a = new ObjectField();
-        a.objectType = typeof(GameObject);
-        node.mainContainer.Add(a);
-        RefreshNode(node);
-        return node;
     }
 
     public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)

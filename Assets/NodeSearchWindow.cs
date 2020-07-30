@@ -25,10 +25,10 @@ public class NodeSearchWindow : ScriptableObject, ISearchWindowProvider
         {
             new SearchTreeGroupEntry(new GUIContent("Create Elements"), 0),
             new SearchTreeGroupEntry(new GUIContent("Actions"), 1),
-            new SearchTreeEntry(new GUIContent("Start"))
-            {
-                userData = new StartNode {NodeType = NodeType.Start, title = "Start Node", Type = typeof(StartNode)}, level = 2
-            },
+            // new SearchTreeEntry(new GUIContent("Exit"))
+            // {
+            //     userData = new StartNode {NodeType = NodeType.Exit, title = "Start Node", Type = typeof(ExitNode)}, level = 2
+            // },
             new SearchTreeEntry(new GUIContent("Change Scene"))
             {
                 userData = new ChangeSceneNode {NodeType = NodeType.Action, title = "Change Scene Node", Type = typeof(ChangeSceneNode)}, level = 2
@@ -41,6 +41,10 @@ public class NodeSearchWindow : ScriptableObject, ISearchWindowProvider
             new SearchTreeEntry(new GUIContent("Multi"))
             {
                 userData = new MultiNode{NodeType = NodeType.Multi, title = "Multi Node", Type = typeof(MultiNode)}, level = 2
+            },
+            new SearchTreeEntry(new GUIContent("Random"))
+            {
+                userData = new RandomNode{NodeType = NodeType.Random, title = "Random Node", Type = typeof(RandomNode)}, level = 2
             }
             
         };

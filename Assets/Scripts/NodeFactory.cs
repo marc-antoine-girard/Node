@@ -26,6 +26,16 @@ public class NodeFactory
             node = MultiNode.Create(actionNodeData.title, actionNodeData.Position, actionNodeData.GUID,
                 actionNodeData.OutputPortIDs, actionNodeData.NodeType);
         }
+        else if (actionNodeData.Type == typeof(ExitNode))
+        {
+            node = ExitNode.Create(actionNodeData.title, actionNodeData.Position, actionNodeData.GUID,
+                actionNodeData.OutputPortIDs, actionNodeData.NodeType);
+        }
+        else if (actionNodeData.Type == typeof(RandomNode))
+        {
+            node = RandomNode.Create(actionNodeData.title, actionNodeData.Position, actionNodeData.GUID,
+                actionNodeData.OutputPortIDs, actionNodeData.NodeType);
+        }
         else
         {
             throw new NotImplementedException("Node type not implemented in NodeFactory");
