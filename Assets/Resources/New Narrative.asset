@@ -13,40 +13,25 @@ MonoBehaviour:
   m_Name: New Narrative
   m_EditorClassIdentifier: 
   NodeLinks:
-  - BaseNodeGuid: 615cf75a-a6e7-4492-9eec-4e86573e04a0
+  - BaseNodeGuid: cf4d1216-f317-440e-a8fd-db3e63972c83
     PortName: 
-    TargetNodeGuid: 6bd9d434-0a56-41a9-bc00-9b4463f75994
-  - BaseNodeGuid: 6bd9d434-0a56-41a9-bc00-9b4463f75994
-    PortName: 
-    TargetNodeGuid: 245c2908-1152-44b2-b2bd-5de020f98dae
+    TargetNodeGuid: 8f772a1b-5897-4d86-ada7-259be30cd4b7
   ActionNodeDatas:
-  - GUID: 245c2908-1152-44b2-b2bd-5de020f98dae
-    title: Exit Node
+  - GUID: cf4d1216-f317-440e-a8fd-db3e63972c83
     Position:
       serializedVersion: 2
-      x: 534
-      y: 196
-      width: 100
-      height: 77
-    NodeType: 1
-    OutputPortIDs: []
-  - GUID: 615cf75a-a6e7-4492-9eec-4e86573e04a0
-    title: Start Node
-    Position:
-      serializedVersion: 2
-      x: 177
+      x: 100
       y: 200
       width: 107
       height: 77
-    NodeType: 0
+    NodeType: 2
     OutputPortIDs: []
-  - GUID: 6bd9d434-0a56-41a9-bc00-9b4463f75994
-    title: Action
+  - GUID: 8f772a1b-5897-4d86-ada7-259be30cd4b7
     Position:
       serializedVersion: 2
-      x: 336
-      y: 184
-      width: 158
-      height: 97
+      x: 493
+      y: 333
+      width: 100
+      height: 77
     NodeType: 2
     OutputPortIDs: []

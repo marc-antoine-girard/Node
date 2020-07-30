@@ -6,12 +6,8 @@ namespace Nodes
 {
     public class StartNode : BaseNode
     {
-        public StartNode()
-        {
-        }
-        public StartNode(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType) : base(nodeName, position, guid, outputPortIDs, nodeType)
-        {
-        }
+        public StartNode() { }
+        public StartNode(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType) : base(nodeName, position, guid, outputPortIDs, nodeType) {}
     
         public new static BaseNode Create(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType)
         {

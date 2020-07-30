@@ -6,12 +6,8 @@ namespace Nodes
 {
     public class ConditionalNode : BaseNode
     {
-        public ConditionalNode()
-        {
-        }
-        public ConditionalNode(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType) : base(nodeName, position, guid, outputPortIDs, nodeType)
-        {
-        }
+        public ConditionalNode() { }
+        public ConditionalNode(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType) : base(nodeName, position, guid, outputPortIDs, nodeType) { }
     
         public new static ConditionalNode Create(string nodeName, Rect position, string guid, List<string> OutputPortIDs, NodeType nodeType)
         {

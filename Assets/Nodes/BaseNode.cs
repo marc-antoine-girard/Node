@@ -12,11 +12,8 @@ namespace Nodes
         public NodeType NodeType;
         public List<string> OutputPortIDs = new List<string>();
         public Type Type;
-
-        public BaseNode()
-        {
-        
-        }
+       
+        public BaseNode() {}
         public BaseNode(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType)
         {
             title = nodeName;

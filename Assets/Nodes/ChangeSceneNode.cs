@@ -7,13 +7,9 @@ namespace Nodes
 {
     public class ChangeSceneNode : BaseNode
     {
-        public ChangeSceneNode()
-        {
-        }
+        public ChangeSceneNode() {}
 
-        public ChangeSceneNode(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType) : base(nodeName, position, guid, outputPortIDs, nodeType)
-        {
-        }
+        public ChangeSceneNode(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType) : base(nodeName, position, guid, outputPortIDs, nodeType) { }
 
         public new static ChangeSceneNode Create(string nodeName, Rect position, string guid, List<string> OutputPortIDs, NodeType nodeType)
         {
@@ -36,7 +32,6 @@ namespace Nodes
             extensionContainer.Add(a);
             graphView.RefreshNode(this);
             graphView.AddElement(this);
-
         }
     }
 }

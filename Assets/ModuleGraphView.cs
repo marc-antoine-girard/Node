@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
-public enum NodeType // Soon Depricated
+public enum NodeType // Soon Deprecated
 {
     Start, Exit, Action, Conditional, Multi, Random
 }
@@ -36,9 +36,22 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
         styleSheets.Add(gridStyle);
         Insert(0, grid);
         grid.StretchToParentSize();
-        AddElement(GenerateEntryPointNode(new BaseNode {NodeType = NodeType.Start}));
-        AddElement(GenerateExitPointNode(new BaseNode {NodeType = NodeType.Exit}));
 
+        NodeFactory.CreateNode(new ActionNodeData
+        {
+            Position = new Rect(100, 200, 100, 150),
+            Type = typeof(StartNode),
+            GUID = Guid.NewGuid().ToString(),
+            NodeType = NodeType.Action
+        }).Draw(this);
+        
+        NodeFactory.CreateNode(new ActionNodeData
+        {
+            Position = new Rect(500, 200, 100, 150),
+            Type = typeof(ExitNode),
+            GUID = Guid.NewGuid().ToString(),
+            NodeType = NodeType.Action
+        }).Draw(this);
         
         AddSearchWindow();
         LiveChangeActionModule();
@@ -186,34 +199,6 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
                     compatiblePorts.Add(port);
         });
         return compatiblePorts;
-    }
-    public void AddChoicePort(BaseNode baseNode, string overridenPortName = "")
-    {
-        var generatePort = GeneratePort<float>(baseNode, Direction.Output);
-        
-        //Removes the default port name using a query
-        var oldLabel = generatePort.contentContainer.Q<Label>("type");
-        oldLabel.visible = false;
-        oldLabel.style.width = 0;
-        oldLabel.style.marginLeft = 0;
-        oldLabel.style.marginRight = 0;
-        
-        var outputPortCount = baseNode.outputContainer.Query("connector").ToList().Count;
-        var choicePortName = string.IsNullOrEmpty(overridenPortName)
-            ? $"Output {outputPortCount + 1}"
-            : overridenPortName;
-        
-        var textField = new TextField
-        {
-            name = string.Empty,
-            value = choicePortName,
-            style = {width = 60}
-        };
-        textField.RegisterCallback<ChangeEvent<string>>(evt => generatePort.portName = evt.newValue);
-        generatePort.contentContainer.Add(new Label(" "));
-        generatePort.contentContainer.Add(textField);
-        generatePort.portName = choicePortName;
-        RefreshNode(baseNode);
     }
 
     public void ToggleGrid(bool value)

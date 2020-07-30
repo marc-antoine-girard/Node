@@ -7,7 +7,6 @@ using UnityEngine;
 public class ActionNodeData
 {
     public string GUID;
-    public string title;
     public Rect Position;
     public NodeType NodeType;
     public List<string> OutputPortIDs;

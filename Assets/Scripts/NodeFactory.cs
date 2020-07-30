@@ -1,40 +1,48 @@
 ﻿using System;
+using System.Collections.Generic;
 using Nodes;
+using UnityEngine;
 
 public class NodeFactory
 {
-    public static BaseNode CreateNode(ActionNodeData actionNodeData)
+    //TODO use NodeType to categorize Types.
+    public static BaseNode CreateNode(ActionNodeData aData)
     {
+        if (aData.Type == null) return null;
+        
+        aData.GUID = string.IsNullOrEmpty(aData.GUID) ? Guid.NewGuid().ToString() : aData.GUID;
+        aData.OutputPortIDs = aData.OutputPortIDs ?? new List<string>();
+        
         BaseNode node;
-        if (actionNodeData.Type == typeof(ChangeSceneNode))
+        if (aData.Type == typeof(ChangeSceneNode))
         {
-            node = ChangeSceneNode.Create(actionNodeData.title, actionNodeData.Position, actionNodeData.GUID,
-                actionNodeData.OutputPortIDs, actionNodeData.NodeType);
+            node = ChangeSceneNode.Create("Change Scene", aData.Position, aData.GUID,
+                aData.OutputPortIDs, aData.NodeType);
         }
-        else if (actionNodeData.Type == typeof(StartNode))
+        else if (aData.Type == typeof(StartNode))
         {
-            node = StartNode.Create(actionNodeData.title, actionNodeData.Position, actionNodeData.GUID,
-                actionNodeData.OutputPortIDs, actionNodeData.NodeType);
+            node = StartNode.Create("Start Node", aData.Position, aData.GUID,
+                aData.OutputPortIDs, aData.NodeType);
         }
-        else if (actionNodeData.Type == typeof(ConditionalNode))
+        else if (aData.Type == typeof(ConditionalNode))
         {
-            node = ConditionalNode.Create(actionNodeData.title, actionNodeData.Position, actionNodeData.GUID,
-                actionNodeData.OutputPortIDs, actionNodeData.NodeType);
+            node = ConditionalNode.Create("Conditional", aData.Position, aData.GUID,
+                aData.OutputPortIDs, aData.NodeType);
         }
-        else if (actionNodeData.Type == typeof(MultiNode))
+        else if (aData.Type == typeof(MultiNode))
         {
-            node = MultiNode.Create(actionNodeData.title, actionNodeData.Position, actionNodeData.GUID,
-                actionNodeData.OutputPortIDs, actionNodeData.NodeType);
+            node = MultiNode.Create("Multi Output", aData.Position, aData.GUID,
+                aData.OutputPortIDs, aData.NodeType);
         }
-        else if (actionNodeData.Type == typeof(ExitNode))
+        else if (aData.Type == typeof(ExitNode))
         {
-            node = ExitNode.Create(actionNodeData.title, actionNodeData.Position, actionNodeData.GUID,
-                actionNodeData.OutputPortIDs, actionNodeData.NodeType);
+            node = ExitNode.Create("Exit Node", aData.Position, aData.GUID,
+                aData.OutputPortIDs, aData.NodeType);
         }
-        else if (actionNodeData.Type == typeof(RandomNode))
+        else if (aData.Type == typeof(RandomNode))
         {
-            node = RandomNode.Create(actionNodeData.title, actionNodeData.Position, actionNodeData.GUID,
-                actionNodeData.OutputPortIDs, actionNodeData.NodeType);
+            node = RandomNode.Create("Random Node", aData.Position, aData.GUID,
+                aData.OutputPortIDs, aData.NodeType);
         }
         else
         {

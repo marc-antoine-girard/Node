@@ -49,7 +49,6 @@ public class GraphSaveUtility
             actionContainer.ActionNodeDatas.Add(new ActionNodeData
             {
                 GUID = baseNode.GUID,
-                title = baseNode.title,
                 Position = baseNode.GetPosition(),
                 NodeType = baseNode.NodeType,
                 OutputPortIDs = baseNode.OutputPortIDs,

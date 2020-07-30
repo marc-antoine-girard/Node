@@ -27,24 +27,24 @@ public class NodeSearchWindow : ScriptableObject, ISearchWindowProvider
             new SearchTreeGroupEntry(new GUIContent("Actions"), 1),
             // new SearchTreeEntry(new GUIContent("Exit"))
             // {
-            //     userData = new StartNode {NodeType = NodeType.Exit, title = "Start Node", Type = typeof(ExitNode)}, level = 2
+            //     userData = new StartNode {NodeType = NodeType.Exit, Type = typeof(ExitNode)}, level = 2
             // },
             new SearchTreeEntry(new GUIContent("Change Scene"))
             {
-                userData = new ChangeSceneNode {NodeType = NodeType.Action, title = "Change Scene Node", Type = typeof(ChangeSceneNode)}, level = 2
+                userData = new ChangeSceneNode {NodeType = NodeType.Action, Type = typeof(ChangeSceneNode)}, level = 2
             },
             new SearchTreeGroupEntry(new GUIContent("Outputs"), 1),
             new SearchTreeEntry(new GUIContent("Conditional"))
             {
-                userData = new ConditionalNode{NodeType = NodeType.Conditional, title = "Conditional Node", Type = typeof(ConditionalNode)}, level = 2
+                userData = new ConditionalNode{NodeType = NodeType.Conditional, Type = typeof(ConditionalNode)}, level = 2
             },
             new SearchTreeEntry(new GUIContent("Multi"))
             {
-                userData = new MultiNode{NodeType = NodeType.Multi, title = "Multi Node", Type = typeof(MultiNode)}, level = 2
+                userData = new MultiNode{NodeType = NodeType.Multi, Type = typeof(MultiNode)}, level = 2
             },
             new SearchTreeEntry(new GUIContent("Random"))
             {
-                userData = new RandomNode{NodeType = NodeType.Random, title = "Random Node", Type = typeof(RandomNode)}, level = 2
+                userData = new RandomNode{NodeType = NodeType.Random, Type = typeof(RandomNode)}, level = 2
             }
             
         };
@@ -60,7 +60,6 @@ public class NodeSearchWindow : ScriptableObject, ISearchWindowProvider
         BaseNode node = (BaseNode)SearchTreeEntry.userData;
         ActionNodeData and = new ActionNodeData
         {
-            title = node.title,
             NodeType = node.NodeType,
             Position = new Rect(localMousePosition, graphView.defaultNodeSize),
             GUID = Guid.NewGuid().ToString(),
@@ -97,19 +96,14 @@ public class NodeSearchWindow : ScriptableObject, ISearchWindowProvider
                     graphView.RemoveElement(e);
                 }
             }
-            
-            if (graphView.tempPort.direction == Direction.Output)
+            var tempEdge = new Edge
             {
-                var tempEdge = new Edge
-                {
-                    input = inputPort,
-                    output = graphView.tempPort
-                };
-                inputPort.Connect(tempEdge);
-                graphView.tempPort.Connect(tempEdge);
-                graphView.Add(tempEdge);
-            }
-            
+                input = inputPort,
+                output = graphView.tempPort
+            };
+            inputPort.Connect(tempEdge);
+            graphView.tempPort.Connect(tempEdge);
+            graphView.Add(tempEdge);
             
             graphView.tempPort = null;
             graphView.tempEdge = null;
