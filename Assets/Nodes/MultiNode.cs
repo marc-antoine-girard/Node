@@ -8,7 +8,7 @@ namespace Nodes
 {
     public class MultiNode : BaseNode
     {
-        private MultiModule Script = ScriptableObject.CreateInstance<MultiModule>();
+        public new MultiModule Script = ScriptableObject.CreateInstance<MultiModule>();
         public override Type ScriptType => typeof(MultiModule);
         public MultiNode() { }
         public MultiNode(string nodeName, Rect position, string guid, List<string> outputPortIDs) : base(nodeName, position, guid, outputPortIDs) { }

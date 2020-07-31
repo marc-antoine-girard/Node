@@ -9,7 +9,7 @@ namespace Nodes
 {
     public class ChangeSceneNode : BaseNode
     {
-        private ChangeSceneModule Script = ScriptableObject.CreateInstance<ChangeSceneModule>();
+        public new ChangeSceneModule Script = ScriptableObject.CreateInstance<ChangeSceneModule>();
         public override Type ScriptType => typeof(ChangeSceneModule);
 
         public ChangeSceneNode() {}
@@ -23,6 +23,7 @@ namespace Nodes
 
         protected override void DrawNode(ModuleGraphView graphView)
         {
+            Debug.Log(Script.SceneIndex);
             var inputPort = graphView.GeneratePort<float>(this, Direction.Input, Port.Capacity.Multi);
             inputPort.portName = "Input";
             inputContainer.Add(inputPort);
@@ -50,6 +51,7 @@ namespace Nodes
 
         public override string GetSerializedScript()
         {
+            Script.GUID = GUID;
             return JsonUtility.ToJson(Script);
         }
         public override void SetSerializedScript(string json)

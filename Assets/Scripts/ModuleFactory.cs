@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class ModuleFactory
 {
+    /// <summary>
+    /// Creates a module  
+    /// </summary>
+    /// <param name="type">The type of the module to create</param>
+    /// <param name="json">The serialized Script in JSON Format</param>
+    /// <returns>BaseModule</returns>
+    /// <exception cref="NotImplementedException"></exception>
     public static BaseModule CreateModule(Type type, string json)
     {
         if (type == null) return null;
@@ -37,6 +44,10 @@ public class ModuleFactory
         else if (type == typeof(TakeObjectModule))
         {
             module = ScriptableObject.CreateInstance<TakeObjectModule>();
+        }
+        else
+        {
+            throw new NotImplementedException($"Module Type {type} not handled in ModuleFactory");
         }
         
         if(!string.IsNullOrEmpty(json))

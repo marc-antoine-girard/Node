@@ -8,7 +8,7 @@ namespace Nodes
 {
     public class ConditionalNode : BaseNode
     {
-        private ConditionalModule Script = ScriptableObject.CreateInstance<ConditionalModule>();
+        public new ConditionalModule Script = ScriptableObject.CreateInstance<ConditionalModule>();
         public override Type ScriptType => typeof(ConditionalModule);
         public ConditionalNode() { }
         public ConditionalNode(string nodeName, Rect position, string guid, List<string> outputPortIDs) : base(nodeName, position, guid, outputPortIDs) { }
@@ -26,10 +26,12 @@ namespace Nodes
 
             var Success = graphView.GeneratePort<float>(this, Direction.Output);
             Success.portName = "Success";
+            Success.name = "Success";
             outputContainer.Add(Success);
 
             var Failure = graphView.GeneratePort<float>(this, Direction.Output);
             Failure.portName = "Failure";
+            Failure.name = "Failure";
             outputContainer.Add(Failure);
 
             graphView.RefreshNode(this);

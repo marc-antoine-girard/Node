@@ -11,4 +11,5 @@ public class ActionNodeData
     public Rect Position;
     public List<string> OutputPortIDs;
     public string SerializedScript;
+    public string ScriptType;
 }

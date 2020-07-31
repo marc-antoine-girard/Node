@@ -54,7 +54,7 @@ public class NodeFactory
         }
         else
         {
-            throw new NotImplementedException("Node type not implemented in NodeFactory");
+            throw new NotImplementedException($"Node type {type} not handled in NodeFactory");
         }
 
         node?.SetSerializedScript(aData.SerializedScript);

@@ -56,7 +56,8 @@ public class GraphSaveUtility
                 Position = baseNode.GetPosition(),
                 OutputPortIDs = copy,
                 NodeType = baseNode.NodeType.AssemblyQualifiedName,
-                SerializedScript = baseNode.GetSerializedScript()
+                SerializedScript = baseNode.GetSerializedScript(),
+                ScriptType = baseNode.ScriptType.AssemblyQualifiedName
             });
         }
 
@@ -123,11 +124,6 @@ public class GraphSaveUtility
         {
             var node = NodeFactory.CreateNode(nodeData);
             node?.Draw(targetGraphView);
-            // var node = BaseNode.Create(nodeData.title, nodeData.Position, nodeData.GUID, nodeData.OutputPortIDs, nodeData.NodeType);
-
-            // var nodePorts = containerCache.NodeLinks.Where(x => x.BaseNodeGuid == nodeData.GUID).ToList();
-            // nodePorts.ForEach(x => targetGraphView.AddChoicePort(tempNode, x.PortName));
-
         }
     }
 
@@ -136,9 +132,7 @@ public class GraphSaveUtility
         foreach (var node in nodes)
         {
             edges.Where(edge => edge.input.node == node).ToList().ForEach(edge => targetGraphView.RemoveElement(edge));
-            
             targetGraphView.RemoveElement(node);
         }
-        
     }
 }

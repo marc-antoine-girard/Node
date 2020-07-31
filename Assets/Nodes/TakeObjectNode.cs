@@ -10,7 +10,7 @@ namespace Nodes
 {
     public class TakeObjectNode : BaseNode
     {
-        private TakeObjectModule Script = ScriptableObject.CreateInstance<TakeObjectModule>();
+        public new TakeObjectModule Script = ScriptableObject.CreateInstance<TakeObjectModule>();
         public override Type ScriptType => typeof(TakeObjectModule);
 
         public TakeObjectNode() { }
