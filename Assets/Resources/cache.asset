@@ -14,28 +14,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ContainerName: 
   NodeLinks:
-  - BaseNodeGuid: 8185a332-5751-411c-bb24-8e578b6d0c65
+  - BaseNodeGuid: badaa953-2710-475d-b648-a7c42a401dba
     PortName: 
-    TargetNodeGuid: bd1cbff3-0489-4c1c-b51d-a67cacea197d
+    TargetNodeGuid: 869abde1-3b9d-4d2a-95b4-a620ced089ae
   ActionNodeDatas:
   - NodeType: Nodes.StartNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    GUID: 8185a332-5751-411c-bb24-8e578b6d0c65
+    GUID: badaa953-2710-475d-b648-a7c42a401dba
     Position:
       serializedVersion: 2
-      x: 100
-      y: 200
+      x: 74
+      y: 236
       width: 107
       height: 77
     OutputPortIDs: []
     SerializedScript: '{"Delay":0,"test":5}'
   - NodeType: Nodes.ExitNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    GUID: bd1cbff3-0489-4c1c-b51d-a67cacea197d
+    GUID: 869abde1-3b9d-4d2a-95b4-a620ced089ae
     Position:
       serializedVersion: 2
-      x: 441
-      y: 149
+      x: 271
+      y: 277
       width: 100
       height: 77
     OutputPortIDs: []

@@ -6,7 +6,7 @@ public class ModuleFactory
 {
     public static BaseModule CreateModule(Type type, string json)
     {
-        if (string.IsNullOrEmpty(json) || type == null) return null;
+        if (type == null) return null;
         
         BaseModule module = null;
         
@@ -38,7 +38,9 @@ public class ModuleFactory
         {
             module = ScriptableObject.CreateInstance<TakeObjectModule>();
         }
-        JsonUtility.FromJsonOverwrite(json, module);
+        
+        if(!string.IsNullOrEmpty(json))
+            JsonUtility.FromJsonOverwrite(json, module);
 
         return module;
     }

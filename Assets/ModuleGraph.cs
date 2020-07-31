@@ -14,7 +14,7 @@ public class ModuleGraph : EditorWindow
     public static void OpenDialogueGraphWindow()
     {
         var window = GetWindow<ModuleGraph>();
-        window.titleContent = new GUIContent(DefaultName);
+        // window.titleContent = new GUIContent(DefaultName);
     }
 
     private void OnEnable()
@@ -27,7 +27,8 @@ public class ModuleGraph : EditorWindow
             RequestDataOperation(false, defaultCacheName);
             AssetDatabase.DeleteAsset($"Assets/Resources/{defaultCacheName}.asset");
             titleContent = new GUIContent($"{DefaultName} *");
-            graphView.IsDirty = true;
+            // graphView.IsDirty = true;
+            graphView.SetDirty();
         }
         else { ConstructGraphView(); }
         
