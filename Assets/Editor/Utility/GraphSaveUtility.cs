@@ -38,7 +38,7 @@ public class GraphSaveUtility
             actionContainer.NodeLinks.Add(new NodeLinkData
             {
                 BaseNodeGuid = outputNode.GUID,
-                PortName = edge.output.name,
+                BasePortName = edge.output.name,
                 TargetNodeGuid = inputNode.GUID
             });
         }
@@ -98,7 +98,7 @@ public class GraphSaveUtility
             for (int j = 0; j < connections.Count; j++)
             {
                 var targetNodeGuid = connections[j].TargetNodeGuid;
-                var outputPort = outputPorts.First(x => x.name == connections[j].PortName);
+                var outputPort = outputPorts.First(x => x.name == connections[j].BasePortName);
                 var targetNode = nodes.First(x => x.GUID == targetNodeGuid);
                 LinkNodes((Port) targetNode.inputContainer[0], outputPort);
             }
