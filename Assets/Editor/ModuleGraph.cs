@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -9,6 +10,7 @@ public class ModuleGraph : EditorWindow
 {
     public static ModuleGraphView graphView;
     public readonly static string defaultCacheName = "cache";
+    public string LoadedFileName = "";
     public static string filename = "New Narrative";
     public static readonly string DefaultName = "Chapter Graph";
     [MenuItem("Graph/Module Graph")]
@@ -58,11 +60,26 @@ public class ModuleGraph : EditorWindow
         Toggle gridCheckbox = new Toggle();
         Button saveButton = new Button {text = "Save"};
         Button newButton = new Button {text = "New"};
+        ToolbarMenu fileMenu = new ToolbarMenu {text = "File"};
+        
+        #region Groups
+        //Should iterate through ActionModuleGroup
+        fileMenu.menu.AppendAction("new", action =>
+        {
+            objectField.value = null;
+            graphView.CreateEmptyNewGraph();
+        });
+        fileMenu.menu.AppendSeparator();
+
+        fileMenu.menu.AppendAction("Save", action => { groupMenu.text = action.name; }, 
+            a => DropdownMenuAction.Status.Normal, default);
+
+        #endregion
+        
         
         #region New Button
         newButton.clicked += () =>
         {
-            GraphSaveUtility.ClearGraph(graphView);
             objectField.value = null;
             graphView.CreateEmptyNewGraph();
         };
@@ -74,13 +91,17 @@ public class ModuleGraph : EditorWindow
         {
             var saveUtility = GraphSaveUtility.GetInstance(graphView);
 
+            //if dirty
             if (!graphView.IsDirty)
             {
+                //and has a value
                 if (evt.newValue != null)
                 {
                     //clears and loadGraph
                     saveUtility.LoadGraph((ActionContainer)evt.newValue);
-                    fileNameTextField.SetValueWithoutNotify(((ActionContainer)evt.newValue).ContainerName);
+                    string loadedName = ((ActionContainer) evt.newValue).ContainerName;
+                    LoadedFileName = loadedName;
+                    fileNameTextField.SetValueWithoutNotify(loadedName);
                     return;
                 }
                 graphView.CreateEmptyNewGraph();
@@ -120,10 +141,11 @@ public class ModuleGraph : EditorWindow
         fileNameTextField.RegisterCallback<ChangeEvent<string>>(evt => { filename = evt.newValue;});
         #endregion
         
-        #region Save and load Buttons
+        #region Save Buttons
         saveButton.clicked += () =>
         {
-            var actionContainer = SaveGraph(filename);
+            string path = EditorUtility.SaveFilePanelInProject("Save", "Assets", "asset", "aaaaa");
+            var actionContainer = SaveGraph(path, true);
             if (actionContainer) objectField.SetValueWithoutNotify(actionContainer);
         };
         #endregion
@@ -144,9 +166,10 @@ public class ModuleGraph : EditorWindow
             a => DropdownMenuAction.Status.Checked, default);
         #endregion
         
-        toolbar.Add(newButton);
+        toolbar.Add(fileMenu);
+        // toolbar.Add(newButton);
         toolbar.Add(objectField);
-        toolbar.Add(fileNameTextField);
+        // toolbar.Add(fileNameTextField);
         toolbar.Add(saveButton);
         toolbar.Add(gridCheckbox);
         toolbar.Add(groupMenu);
@@ -166,19 +189,20 @@ public class ModuleGraph : EditorWindow
 
         var saveUtility = GraphSaveUtility.GetInstance(graphView);
         
+        // if loads cache file, shouldn't set the graphview to not dirty.
         if(saveUtility.LoadGraph(fileName) && fileName != defaultCacheName)
             graphView.SetDirty(false);
 
         return true;
     }
 
-    public ActionContainer SaveGraph(string fileName)
+    public ActionContainer SaveGraph(string fileName, bool usePath = false)
     {
         var saveUtility = GraphSaveUtility.GetInstance(graphView);
         ActionContainer saved = null;
-        if (graphView.IsDirty)
+        if (graphView.IsDirty || fileName != LoadedFileName)
         {
-            saved = saveUtility.SaveGraph(fileName);
+            saved = saveUtility.SaveGraph(fileName, usePath);
             if (saved) graphView.SetDirty(false);
         }
         return saved;

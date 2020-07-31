@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a7f0e05cdc480b449afa823a78aaf784, type: 3}
-  m_Name: New Narrative
+  m_Name: new
   m_EditorClassIdentifier: 
-  ContainerName: New Narrative
+  ContainerName: Assets/Resources/new.asset
   NodeLinks:
-  - BaseNodeGuid: 2f1b793b-70d0-4015-8a52-894f06965986
+  - BaseNodeGuid: f1c96618-8009-498f-89cc-81da182e4f25
     BasePortName: 
-    TargetNodeGuid: 615f9f1a-c6c8-4f59-befd-1ae531b632fe
+    TargetNodeGuid: 65814717-62bd-4489-b659-da3ddc31a29d
     TargetPortName: 
   ActionNodeDatas:
   - NodeType: Nodes.StartNode, Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    GUID: 2f1b793b-70d0-4015-8a52-894f06965986
+    GUID: f1c96618-8009-498f-89cc-81da182e4f25
     Position:
       serializedVersion: 2
       x: 100
@@ -34,12 +34,12 @@ MonoBehaviour:
     ScriptType: StartModule, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   - NodeType: Nodes.ExitNode, Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    GUID: 615f9f1a-c6c8-4f59-befd-1ae531b632fe
+    GUID: 65814717-62bd-4489-b659-da3ddc31a29d
     Position:
       serializedVersion: 2
-      x: 352
-      y: 277.6
-      width: 101.600006
+      x: 264.8
+      y: 321.6
+      width: 100.80002
       height: 76.80002
     InputPortIDs: []
     OutputPortIDs: []

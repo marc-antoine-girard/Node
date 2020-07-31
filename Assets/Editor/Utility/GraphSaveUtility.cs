@@ -23,11 +23,12 @@ public class GraphSaveUtility
         };
     }
 
-    public ActionContainer SaveGraph(string fileName)
+    public ActionContainer SaveGraph(string fileName, bool usePath = false)
     {
         if (!edges.Any()) return null;
 
         var actionContainer = ScriptableObject.CreateInstance<ActionContainer>();
+        actionContainer.ContainerName = fileName;
         //Cycle through every edges in GraphView
         //Add them to Nodelinks in ActionContainer
         foreach (var edge in edges)
@@ -45,16 +46,17 @@ public class GraphSaveUtility
 
         foreach (var baseNode in nodes)
         {
-            List<string> copy = new List<string>();
-            foreach (var outputPortID in baseNode.OutputPortIDs)
-            {
-                copy.Add(outputPortID);
-            }
+            // List<string> copy = new List<string>();
+            string[] copy = new string[baseNode.OutputPortIDs.Count];
+            baseNode.OutputPortIDs.CopyTo(copy);
+            
+            // foreach (var outputPortID in baseNode.OutputPortIDs) { copy.Add(outputPortID); }
+            
             actionContainer.ActionNodeDatas.Add(new ActionNodeData
             {
                 GUID = baseNode.GUID,
                 Position = baseNode.GetPosition(),
-                OutputPortIDs = copy,
+                OutputPortIDs = copy.ToList(),
                 NodeType = baseNode.NodeType.AssemblyQualifiedName,
                 SerializedScript = baseNode.GetSerializedScript(),
                 ScriptType = baseNode.ScriptType.AssemblyQualifiedName
@@ -64,9 +66,18 @@ public class GraphSaveUtility
         //If Resources folder doesn't exist, create it.
         if (!AssetDatabase.IsValidFolder("Assets/Resources"))
             AssetDatabase.CreateFolder("Assets", "Resources");
+
+        if (usePath)
+        {
+            AssetDatabase.CreateAsset(actionContainer, fileName);
+            AssetDatabase.SaveAssets();
+        }
+        else
+        {
+            AssetDatabase.CreateAsset(actionContainer, $"Assets/Resources/{fileName}.asset");
+            AssetDatabase.SaveAssets();
+        }
         
-        AssetDatabase.CreateAsset(actionContainer, $"Assets/Resources/{fileName}.asset");
-        AssetDatabase.SaveAssets();
 
         return actionContainer;
     }
@@ -74,7 +85,7 @@ public class GraphSaveUtility
     public bool LoadGraph(ActionContainer actionContainer)
     {
         containerCache = actionContainer;
-        ClearGraph();
+        targetGraphView.ClearGraph();
         CreateNodes();
         ConnectNodes();
         return true;
@@ -131,23 +142,6 @@ public class GraphSaveUtility
         {
             var node = NodeFactory.CreateNode(nodeData);
             node?.Draw(targetGraphView);
-        }
-    }
-
-    public void ClearGraph()
-    {
-        foreach (var node in nodes)
-        {
-            edges.Where(edge => edge.input.node == node).ToList().ForEach(edge => targetGraphView.RemoveElement(edge));
-            targetGraphView.RemoveElement(node);
-        }
-    }
-    public static void ClearGraph(ModuleGraphView graphView)
-    {
-        foreach (var node in graphView.nodes.ToList())
-        {
-            graphView.edges.ToList().Where(edge => edge.input.node == node).ToList().ForEach(edge => graphView.RemoveElement(edge));
-            graphView.RemoveElement(node);
         }
     }
 }
