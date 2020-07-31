@@ -22,7 +22,7 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
     public ModuleGraphView(EditorWindow window)
     {
         this.window = window;
-        gridStyle = Resources.Load<StyleSheet>("Dialogue");
+        gridStyle = Resources.Load<StyleSheet>("GraphStyle");
         SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
         
         this.AddManipulator(new ContentDragger());
