@@ -6,10 +6,9 @@ using UnityEngine;
 [Serializable]
 public class ActionNodeData
 {
+    public Type NodeType;
     public string GUID;
     public Rect Position;
-    public NodeType NodeType;
     public List<string> OutputPortIDs;
-    public Type Type;
     public string SerializedScript;
 }

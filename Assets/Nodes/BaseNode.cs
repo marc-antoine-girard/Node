@@ -8,26 +8,27 @@ namespace Nodes
 {
     public class BaseNode : Node
     {
+        // public BaseModule Script;
         public BaseModule Script = ScriptableObject.CreateInstance<BaseModule>();
+        public virtual Type ScriptType => throw new NotImplementedException();
+
 
         public string GUID;
-        public NodeType NodeType;
+        public Type NodeType;
         public List<string> OutputPortIDs = new List<string>();
-        public Type Type;
        
         public BaseNode() {}
-        public BaseNode(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType)
+        public BaseNode(string nodeName, Rect position, string guid, List<string> outputPortIDs)
         {
             title = nodeName;
             GUID = guid;
-            NodeType = nodeType;
             OutputPortIDs = outputPortIDs;
-            Type = GetType();
+            NodeType = GetType();
             SetPosition(position);
         }
-        public static BaseNode Create(string nodeName, Rect position, string guid, List<string> OutputPortIDs, NodeType nodeType)
+        public static BaseNode Create(string nodeName, Rect position, string guid, List<string> outputPortIDs)
         {
-            return new BaseNode(nodeName, position, guid, OutputPortIDs, nodeType);
+            return new BaseNode(nodeName, position, guid, outputPortIDs);
         }
 
         [Conditional("UNITY_EDITOR")]

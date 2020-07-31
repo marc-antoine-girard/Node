@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -7,12 +8,14 @@ namespace Nodes
     public class StartNode : BaseNode
     {
         public new StartModule Script = ScriptableObject.CreateInstance<StartModule>();
+        public override Type ScriptType => typeof(StartModule);
+
         
-        public StartNode(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType) : base(nodeName, position, guid, outputPortIDs, nodeType) {}
+        public StartNode(string nodeName, Rect position, string guid, List<string> outputPortIDs) : base(nodeName, position, guid, outputPortIDs) {}
     
-        public new static StartNode Create(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType)
+        public new static StartNode Create(string nodeName, Rect position, string guid, List<string> outputPortIDs)
         {
-            var node = new StartNode(nodeName, position, guid, outputPortIDs, nodeType);
+            var node = new StartNode(nodeName, position, guid, outputPortIDs);
             return node;
         }
 
@@ -35,6 +38,9 @@ namespace Nodes
         {
             return JsonUtility.ToJson(Script);
         }
-
+        public override void SetSerializedScript(string json)
+        {
+            JsonUtility.FromJsonOverwrite(json, Script);
+        }
     }
 }

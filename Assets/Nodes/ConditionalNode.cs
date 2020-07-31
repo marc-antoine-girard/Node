@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -7,12 +8,14 @@ namespace Nodes
 {
     public class ConditionalNode : BaseNode
     {
+        public new ConditionalModule Script = ScriptableObject.CreateInstance<ConditionalModule>();
+        public override Type ScriptType => typeof(ConditionalModule);
         public ConditionalNode() { }
-        public ConditionalNode(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType) : base(nodeName, position, guid, outputPortIDs, nodeType) { }
+        public ConditionalNode(string nodeName, Rect position, string guid, List<string> outputPortIDs) : base(nodeName, position, guid, outputPortIDs) { }
     
-        public new static ConditionalNode Create(string nodeName, Rect position, string guid, List<string> OutputPortIDs, NodeType nodeType)
+        public new static ConditionalNode Create(string nodeName, Rect position, string guid, List<string> OutputPortIDs)
         {
-            return new ConditionalNode(nodeName, position, guid, OutputPortIDs, nodeType);
+            return new ConditionalNode(nodeName, position, guid, OutputPortIDs);
         }
 
         protected override void DrawNode(ModuleGraphView graphView)
@@ -29,10 +32,17 @@ namespace Nodes
             Failure.portName = "Failure";
             outputContainer.Add(Failure);
 
-            Debug.Log(Failure.name);
-            
             graphView.RefreshNode(this);
             graphView.AddElement(this);
+        }
+        
+        public override string GetSerializedScript()
+        {
+            return JsonUtility.ToJson(Script);
+        }
+        public override void SetSerializedScript(string json)
+        {
+            JsonUtility.FromJsonOverwrite(json, Script);
         }
     }
 }

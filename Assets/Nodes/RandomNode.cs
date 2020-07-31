@@ -8,16 +8,14 @@ namespace Nodes
 {
     public class RandomNode : BaseNode
     {
-        public RandomNode()
-        {
-        }
-        public RandomNode(string nodeName, Rect  position, string guid, List<string> outputPortIDs, NodeType nodeType) : base(nodeName, position, guid, outputPortIDs, nodeType)
-        {
-        }
+        public new RandomModule Script = ScriptableObject.CreateInstance<RandomModule>();
+        public override Type ScriptType => typeof(RandomModule);
+        public RandomNode() { }
+        public RandomNode(string nodeName, Rect  position, string guid, List<string> outputPortIDs) : base(nodeName, position, guid, outputPortIDs) { }
     
-        public new static RandomNode Create(string nodeName, Rect position, string guid, List<string> OutputPortIDs, NodeType nodeType)
+        public new static RandomNode Create(string nodeName, Rect position, string guid, List<string> outputPortIDs)
         {
-            return new RandomNode(nodeName, position, guid, OutputPortIDs, nodeType);
+            return new RandomNode(nodeName, position, guid, outputPortIDs);
         }
 
         protected override void DrawNode(ModuleGraphView graphView)
@@ -57,6 +55,15 @@ namespace Nodes
             node.outputContainer.Add(temp);
             graphView.RefreshNode(node);
             return temp;
+        }
+        
+        public override string GetSerializedScript()
+        {
+            return JsonUtility.ToJson(Script);
+        }
+        public override void SetSerializedScript(string json)
+        {
+            JsonUtility.FromJsonOverwrite(json, Script);
         }
     }
 }

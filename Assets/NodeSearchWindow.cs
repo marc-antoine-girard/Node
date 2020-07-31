@@ -25,26 +25,26 @@ public class NodeSearchWindow : ScriptableObject, ISearchWindowProvider
         {
             new SearchTreeGroupEntry(new GUIContent("Create Elements"), 0),
             new SearchTreeGroupEntry(new GUIContent("Actions"), 1),
-            // new SearchTreeEntry(new GUIContent("Exit"))
-            // {
-            //     userData = new StartNode {NodeType = NodeType.Exit, Type = typeof(ExitNode)}, level = 2
-            // },
             new SearchTreeEntry(new GUIContent("Change Scene"))
             {
-                userData = new ChangeSceneNode {NodeType = NodeType.Action, Type = typeof(ChangeSceneNode)}, level = 2
+                userData = new ChangeSceneNode {NodeType = typeof(ChangeSceneNode)}, level = 2
+            },
+            new SearchTreeEntry(new GUIContent("Take Object"))
+            {
+                userData = new TakeObjectNode {NodeType = typeof(TakeObjectNode)}, level = 2
             },
             new SearchTreeGroupEntry(new GUIContent("Outputs"), 1),
             new SearchTreeEntry(new GUIContent("Conditional"))
             {
-                userData = new ConditionalNode{NodeType = NodeType.Conditional, Type = typeof(ConditionalNode)}, level = 2
+                userData = new ConditionalNode{NodeType = typeof(ConditionalNode)}, level = 2
             },
             new SearchTreeEntry(new GUIContent("Multi"))
             {
-                userData = new MultiNode{NodeType = NodeType.Multi, Type = typeof(MultiNode)}, level = 2
+                userData = new MultiNode{NodeType = typeof(MultiNode)}, level = 2
             },
             new SearchTreeEntry(new GUIContent("Random"))
             {
-                userData = new RandomNode{NodeType = NodeType.Random, Type = typeof(RandomNode)}, level = 2
+                userData = new RandomNode{NodeType = typeof(RandomNode)}, level = 2
             }
             
         };
@@ -60,11 +60,10 @@ public class NodeSearchWindow : ScriptableObject, ISearchWindowProvider
         BaseNode node = (BaseNode)SearchTreeEntry.userData;
         ActionNodeData and = new ActionNodeData
         {
-            NodeType = node.NodeType,
             Position = new Rect(localMousePosition, graphView.defaultNodeSize),
             GUID = Guid.NewGuid().ToString(),
             OutputPortIDs = new List<string>(),
-            Type = node.Type
+            NodeType = node.NodeType
         };
         BaseNode temp = NodeFactory.CreateNode(and);
         temp?.Draw(graphView);

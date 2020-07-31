@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -6,16 +7,14 @@ namespace Nodes
 {
     public class ExitNode : BaseNode
     {
-        public ExitNode()
-        {
-        }
-        public ExitNode(string nodeName, Rect  position, string guid, List<string> outputPortIDs, NodeType nodeType) : base(nodeName, position, guid, outputPortIDs, nodeType)
-        {
-        }
+        public new ExitModule Script = ScriptableObject.CreateInstance<ExitModule>();
+        public override Type ScriptType => typeof(ExitModule);
+        public ExitNode() { }
+        public ExitNode(string nodeName, Rect  position, string guid, List<string> outputPortIDs) : base(nodeName, position, guid, outputPortIDs) { }
     
-        public new static ExitNode Create(string nodeName, Rect position, string guid, List<string> OutputPortIDs, NodeType nodeType)
+        public new static ExitNode Create(string nodeName, Rect position, string guid, List<string> outputPortIDs)
         {
-            return new ExitNode(nodeName, position, guid, OutputPortIDs, nodeType);
+            return new ExitNode(nodeName, position, guid, outputPortIDs);
         }
 
         protected override void DrawNode(ModuleGraphView graphView)
@@ -33,6 +32,15 @@ namespace Nodes
         
             graphView.RefreshNode(this);
             graphView.AddElement(this);
+        }
+        
+        public override string GetSerializedScript()
+        {
+            return JsonUtility.ToJson(Script);
+        }
+        public override void SetSerializedScript(string json)
+        {
+            JsonUtility.FromJsonOverwrite(json, Script);
         }
     }
 }

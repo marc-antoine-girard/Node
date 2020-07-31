@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -9,13 +10,15 @@ namespace Nodes
     public class ChangeSceneNode : BaseNode
     {
         public new ChangeSceneModule Script = ScriptableObject.CreateInstance<ChangeSceneModule>();
+        public override Type ScriptType => typeof(ChangeSceneModule);
+
         public ChangeSceneNode() {}
 
-        public ChangeSceneNode(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType) : base(nodeName, position, guid, outputPortIDs, nodeType) { }
+        public ChangeSceneNode(string nodeName, Rect position, string guid, List<string> outputPortIDs) : base(nodeName, position, guid, outputPortIDs) { }
 
-        public new static ChangeSceneNode Create(string nodeName, Rect position, string guid, List<string> OutputPortIDs, NodeType nodeType)
+        public new static ChangeSceneNode Create(string nodeName, Rect position, string guid, List<string> OutputPortIDs)
         {
-            return new ChangeSceneNode(nodeName, position, guid, OutputPortIDs, nodeType);
+            return new ChangeSceneNode(nodeName, position, guid, OutputPortIDs);
         }
 
         protected override void DrawNode(ModuleGraphView graphView)

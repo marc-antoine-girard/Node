@@ -46,13 +46,17 @@ public class GraphSaveUtility
 
         foreach (var baseNode in nodes)
         {
+            List<string> copy = new List<string>();
+            foreach (var outputPortID in baseNode.OutputPortIDs)
+            {
+                copy.Add(outputPortID);
+            }
             actionContainer.ActionNodeDatas.Add(new ActionNodeData
             {
                 GUID = baseNode.GUID,
                 Position = baseNode.GetPosition(),
+                OutputPortIDs = copy,
                 NodeType = baseNode.NodeType,
-                OutputPortIDs = baseNode.OutputPortIDs,
-                Type = baseNode.Type,
                 SerializedScript = baseNode.GetSerializedScript()
             });
         }
@@ -66,7 +70,7 @@ public class GraphSaveUtility
 
         return true;
     }
-    public void LoadGraph(string fileName)
+    public bool LoadGraph(string fileName)
     {
         containerCache = Resources.Load<ActionContainer>(fileName);
 
@@ -74,25 +78,29 @@ public class GraphSaveUtility
         {
             EditorUtility.DisplayDialog("File Not Found",
                 $"Target dialogue graph file does not exists. \nFilename: {fileName}", "OK");
-            return;
+            return false;
         }
 
         ClearGraph();
         CreateNodes();
         ConnectNodes();
+        return true;
     }
 
     private void ConnectNodes()
     {
         for (int i = 0; i < nodes.Count; i++)
         {
+            //Get all connections associated with the node[i]
             var connections = containerCache.NodeLinks.Where(x => x.BaseNodeGuid == nodes[i].GUID).ToList();
             var outputPorts = nodes[i].outputContainer.Children().ToList().Where(x => x.Q<Port>() != null).Cast<Port>().ToList();
+
             for (int j = 0; j < connections.Count; j++)
             {
                 var targetNodeGuid = connections[j].TargetNodeGuid;
+                var outputPort = outputPorts.First(x => x.name == connections[j].PortName);
                 var targetNode = nodes.First(x => x.GUID == targetNodeGuid);
-                LinkNodes((Port) targetNode.inputContainer[0], outputPorts[j]);
+                LinkNodes((Port) targetNode.inputContainer[0], outputPort);
             }
         }
     }
@@ -115,7 +123,6 @@ public class GraphSaveUtility
         foreach (var nodeData in containerCache.ActionNodeDatas)
         {
             var node = NodeFactory.CreateNode(nodeData);
-            
             node?.Draw(targetGraphView);
             // var node = BaseNode.Create(nodeData.title, nodeData.Position, nodeData.GUID, nodeData.OutputPortIDs, nodeData.NodeType);
 

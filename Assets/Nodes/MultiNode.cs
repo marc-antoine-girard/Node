@@ -8,16 +8,14 @@ namespace Nodes
 {
     public class MultiNode : BaseNode
     {
-        public MultiNode()
-        {
-        }
-        public MultiNode(string nodeName, Rect position, string guid, List<string> outputPortIDs, NodeType nodeType) : base(nodeName, position, guid, outputPortIDs, nodeType)
-        {
-        }
+        public new MultiModule Script = ScriptableObject.CreateInstance<MultiModule>();
+        public override Type ScriptType => typeof(MultiModule);
+        public MultiNode() { }
+        public MultiNode(string nodeName, Rect position, string guid, List<string> outputPortIDs) : base(nodeName, position, guid, outputPortIDs) { }
     
-        public new static MultiNode Create(string nodeName, Rect position, string guid, List<string> OutputPortIDs, NodeType nodeType)
+        public new static MultiNode Create(string nodeName, Rect position, string guid, List<string> outputPortIDs)
         {
-            return new MultiNode(nodeName, position, guid, OutputPortIDs, nodeType);
+            return new MultiNode(nodeName, position, guid, outputPortIDs);
         }
 
         protected override void DrawNode(ModuleGraphView graphView)
@@ -29,34 +27,44 @@ namespace Nodes
             //Set the Add Button
             titleContainer.Insert(1, new Button(() =>
             {
-                OutputPortIDs.Add(AddMultiRow(this, graphView).name);
+                OutputPortIDs.Add(AddMultiRow(graphView).name);
             }){ text = "Add", style = { flexGrow = 0}});
         
             //Add saved port, none otherwise
             foreach (var guid in OutputPortIDs)
             {
-                Port port = AddMultiRow(this, graphView);
+                Port port = AddMultiRow(graphView);
                 port.name = guid;
             }
         
             graphView.RefreshNode(this);
             graphView.AddElement(this);
         }
-        private Port AddMultiRow(MultiNode node, ModuleGraphView graphView)
+        private Port AddMultiRow(ModuleGraphView graphView)
         {
-            var temp = graphView.GeneratePort<float>(node, Direction.Output);
+            var temp = graphView.GeneratePort<float>(this, Direction.Output);
             temp.portName = "Output";
             temp.name = Guid.NewGuid().ToString();
             var deleteButton = new Button(() =>
             {
-                node.OutputPortIDs.Remove(temp.name);
-                graphView.RemovePort(node, temp);
-                graphView.RefreshNode(node);
+                OutputPortIDs.Remove(temp.name);
+                Debug.Log(OutputPortIDs.Count);
+                graphView.RemovePort(this, temp);
+                graphView.RefreshNode(this);
             }){ text = "-", style = { width = 10}};
             temp.contentContainer.Add(deleteButton);
-            node.outputContainer.Add(temp);
-            graphView.RefreshNode(node);
+            outputContainer.Add(temp);
+            graphView.RefreshNode(this);
             return temp;
+        }
+        
+        public override string GetSerializedScript()
+        {
+            return JsonUtility.ToJson(Script);
+        }
+        public override void SetSerializedScript(string json)
+        {
+            JsonUtility.FromJsonOverwrite(json, Script);
         }
     }
 }

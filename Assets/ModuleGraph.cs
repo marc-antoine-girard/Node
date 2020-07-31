@@ -83,13 +83,13 @@ public class ModuleGraph : EditorWindow
         if (save && graphView.IsDirty)
         {
             if (saveUtility.SaveGraph(filename))
-            {
-                titleContent = new GUIContent(DefaultName);
-                graphView.IsDirty = false;
-            }
+                graphView.SetDirty(false);
         }
         else
-            saveUtility.LoadGraph(filename);
+        {
+            if(saveUtility.LoadGraph(filename))
+                graphView.SetDirty(false);
+        }
     }
     
     
