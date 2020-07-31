@@ -22,32 +22,33 @@ public class NodeFactory
         foreach (var outputPort in aData.OutputPortIDs) copy.Add(outputPort);
         
         BaseNode node;
+        Type type = Type.GetType(aData.NodeType);
 
-        if (aData.NodeType == typeof(ChangeSceneNode))
+        if (type == typeof(ChangeSceneNode))
         {
             node = ChangeSceneNode.Create("Change Scene", aData.Position, aData.GUID, copy);
         }
-        else if (aData.NodeType == typeof(StartNode))
+        else if (type == typeof(StartNode))
         {
             node = StartNode.Create("Start Node", aData.Position, aData.GUID, copy);
         }
-        else if (aData.NodeType == typeof(ConditionalNode))
+        else if (type == typeof(ConditionalNode))
         {
             node = ConditionalNode.Create("Conditional", aData.Position, aData.GUID, copy);
         }
-        else if (aData.NodeType == typeof(MultiNode))
+        else if (type == typeof(MultiNode))
         {
             node = MultiNode.Create("Multi Output", aData.Position, aData.GUID, copy);
         }
-        else if (aData.NodeType == typeof(ExitNode))
+        else if (type == typeof(ExitNode))
         {
             node = ExitNode.Create("Exit Node", aData.Position, aData.GUID, copy);
         }
-        else if (aData.NodeType == typeof(RandomNode))
+        else if (type == typeof(RandomNode))
         {
             node = RandomNode.Create("Random Node", aData.Position, aData.GUID, copy);
         }
-        else if (aData.NodeType == typeof(TakeObjectNode))
+        else if (type == typeof(TakeObjectNode))
         {
             node = TakeObjectNode.Create("Take Object", aData.Position, aData.GUID, copy);
         }

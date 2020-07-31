@@ -63,7 +63,7 @@ public class NodeSearchWindow : ScriptableObject, ISearchWindowProvider
             Position = new Rect(localMousePosition, graphView.defaultNodeSize),
             GUID = Guid.NewGuid().ToString(),
             OutputPortIDs = new List<string>(),
-            NodeType = node.NodeType
+            NodeType = node.NodeType.AssemblyQualifiedName
         };
         BaseNode temp = NodeFactory.CreateNode(and);
         temp?.Draw(graphView);

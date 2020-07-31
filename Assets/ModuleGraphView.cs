@@ -37,14 +37,14 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
         NodeFactory.CreateNode(new ActionNodeData
         {
             Position = new Rect(100, 200, 100, 150),
-            NodeType = typeof(StartNode),
+            NodeType = typeof(StartNode).AssemblyQualifiedName,
             GUID = Guid.NewGuid().ToString()
         }).Draw(this);
         
         NodeFactory.CreateNode(new ActionNodeData
         {
             Position = new Rect(500, 200, 100, 150),
-            NodeType = typeof(ExitNode),
+            NodeType = typeof(ExitNode).AssemblyQualifiedName,
             GUID = Guid.NewGuid().ToString()
         }).Draw(this);
         
@@ -71,7 +71,6 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
                     }
                 }
             }
-
             if (change.edgesToCreate != null)
             {
                 foreach (var element in change.edgesToCreate)
@@ -108,7 +107,6 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
             IsDirty = false;
             window.titleContent = new GUIContent($"{ModuleGraph.DefaultName}");
         }
-        
     }
 
     private void AddSearchWindow()

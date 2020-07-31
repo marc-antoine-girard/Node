@@ -10,28 +10,32 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a7f0e05cdc480b449afa823a78aaf784, type: 3}
-  m_Name: New Narrative
+  m_Name: cache
   m_EditorClassIdentifier: 
   ContainerName: 
   NodeLinks:
-  - BaseNodeGuid: 5cd58c60-00d9-47e5-9ca7-2e41ece2d22e
+  - BaseNodeGuid: 8185a332-5751-411c-bb24-8e578b6d0c65
     PortName: 
-    TargetNodeGuid: f9afcaa5-1fda-4375-a90d-3914dd4bf02f
+    TargetNodeGuid: bd1cbff3-0489-4c1c-b51d-a67cacea197d
   ActionNodeDatas:
-  - GUID: 5cd58c60-00d9-47e5-9ca7-2e41ece2d22e
+  - NodeType: Nodes.StartNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    GUID: 8185a332-5751-411c-bb24-8e578b6d0c65
     Position:
       serializedVersion: 2
-      x: 308
-      y: 247
+      x: 100
+      y: 200
       width: 107
       height: 77
     OutputPortIDs: []
     SerializedScript: '{"Delay":0,"test":5}'
-  - GUID: f9afcaa5-1fda-4375-a90d-3914dd4bf02f
+  - NodeType: Nodes.ExitNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    GUID: bd1cbff3-0489-4c1c-b51d-a67cacea197d
     Position:
       serializedVersion: 2
-      x: 452
-      y: 355
+      x: 441
+      y: 149
       width: 100
       height: 77
     OutputPortIDs: []

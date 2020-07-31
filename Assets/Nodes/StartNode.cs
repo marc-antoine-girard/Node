@@ -10,8 +10,7 @@ namespace Nodes
         private StartModule Script = ScriptableObject.CreateInstance<StartModule>();
         public override Type ScriptType => typeof(StartModule);
 
-        
-        public StartNode(string nodeName, Rect position, string guid, List<string> outputPortIDs) : base(nodeName, position, guid, outputPortIDs) {}
+        public StartNode(string nodeName, Rect position, string guid, List<string> outputPortIDs) : base(nodeName, position, guid, outputPortIDs) { }
     
         public new static StartNode Create(string nodeName, Rect position, string guid, List<string> outputPortIDs)
         {

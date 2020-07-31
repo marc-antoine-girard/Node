@@ -28,7 +28,6 @@ public class GraphSaveUtility
         if (!edges.Any()) return false;
 
         var actionContainer = ScriptableObject.CreateInstance<ActionContainer>();
-
         //Cycle through every edges in GraphView
         //Add them to Nodelinks in ActionContainer
         foreach (var edge in edges)
@@ -56,7 +55,7 @@ public class GraphSaveUtility
                 GUID = baseNode.GUID,
                 Position = baseNode.GetPosition(),
                 OutputPortIDs = copy,
-                NodeType = baseNode.NodeType,
+                NodeType = baseNode.NodeType.AssemblyQualifiedName,
                 SerializedScript = baseNode.GetSerializedScript()
             });
         }
