@@ -9,7 +9,7 @@ namespace Nodes
 {
     public class ChangeSceneNode : BaseNode
     {
-        public new ChangeSceneModule Script = ScriptableObject.CreateInstance<ChangeSceneModule>();
+        private ChangeSceneModule Script = ScriptableObject.CreateInstance<ChangeSceneModule>();
         public override Type ScriptType => typeof(ChangeSceneModule);
 
         public ChangeSceneNode() {}

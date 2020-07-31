@@ -8,7 +8,7 @@ namespace Nodes
 {
     public class ConditionalNode : BaseNode
     {
-        public new ConditionalModule Script = ScriptableObject.CreateInstance<ConditionalModule>();
+        private ConditionalModule Script = ScriptableObject.CreateInstance<ConditionalModule>();
         public override Type ScriptType => typeof(ConditionalModule);
         public ConditionalNode() { }
         public ConditionalNode(string nodeName, Rect position, string guid, List<string> outputPortIDs) : base(nodeName, position, guid, outputPortIDs) { }

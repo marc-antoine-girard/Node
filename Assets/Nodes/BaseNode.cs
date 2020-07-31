@@ -9,7 +9,7 @@ namespace Nodes
     public class BaseNode : Node
     {
         // public BaseModule Script;
-        public BaseModule Script = ScriptableObject.CreateInstance<BaseModule>();
+        private BaseModule Script = ScriptableObject.CreateInstance<BaseModule>();
         public virtual Type ScriptType => throw new NotImplementedException();
 
 

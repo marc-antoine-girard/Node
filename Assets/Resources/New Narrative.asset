@@ -13,17 +13,20 @@ MonoBehaviour:
   m_Name: New Narrative
   m_EditorClassIdentifier: 
   NodeLinks:
-  - BaseNodeGuid: 9a254348-cebb-4adf-8f44-12c982cbbfb4
+  - BaseNodeGuid: 21121277-e2ea-4839-bcb3-228f56a8c980
     PortName: 
-    TargetNodeGuid: c8cc7ba2-b0c1-4726-baea-ebc5c638eeed
-  - BaseNodeGuid: c8cc7ba2-b0c1-4726-baea-ebc5c638eeed
-    PortName: 0489f8fb-80e1-4731-a57d-d523071ffd03
-    TargetNodeGuid: 047f96cf-1f4b-40d6-b7ad-3b5a5b6547a5
-  - BaseNodeGuid: c8cc7ba2-b0c1-4726-baea-ebc5c638eeed
-    PortName: 8c569636-e091-4d65-9156-5756f57dfcc3
-    TargetNodeGuid: 047f96cf-1f4b-40d6-b7ad-3b5a5b6547a5
+    TargetNodeGuid: edd66c2e-18bf-46ef-8831-dca631db24ab
+  - BaseNodeGuid: 21121277-e2ea-4839-bcb3-228f56a8c980
+    PortName: 
+    TargetNodeGuid: c69bbd99-4123-4097-bdbb-cd25aca2422c
+  - BaseNodeGuid: edd66c2e-18bf-46ef-8831-dca631db24ab
+    PortName: 
+    TargetNodeGuid: eb68e209-2c74-47be-bcb1-f4d2612d7c20
+  - BaseNodeGuid: c69bbd99-4123-4097-bdbb-cd25aca2422c
+    PortName: 5626c194-5cb2-485e-8445-b168a6c8323a
+    TargetNodeGuid: eb68e209-2c74-47be-bcb1-f4d2612d7c20
   ActionNodeDatas:
-  - GUID: 9a254348-cebb-4adf-8f44-12c982cbbfb4
+  - GUID: 21121277-e2ea-4839-bcb3-228f56a8c980
     Position:
       serializedVersion: 2
       x: 100
@@ -32,24 +35,35 @@ MonoBehaviour:
       height: 77
     OutputPortIDs: []
     SerializedScript: '{"Delay":0,"test":5}'
-  - GUID: 047f96cf-1f4b-40d6-b7ad-3b5a5b6547a5
+  - GUID: edd66c2e-18bf-46ef-8831-dca631db24ab
     Position:
       serializedVersion: 2
-      x: 500
-      y: 200
+      x: 296
+      y: 232
+      width: 136
+      height: 98
+    OutputPortIDs: []
+    SerializedScript: '{"Delay":0,"GameObject":{"instanceID":-1250}}'
+  - GUID: eb68e209-2c74-47be-bcb1-f4d2612d7c20
+    Position:
+      serializedVersion: 2
+      x: 512
+      y: 220
       width: 100
       height: 77
     OutputPortIDs: []
     SerializedScript: '{"Delay":0}'
-  - GUID: c8cc7ba2-b0c1-4726-baea-ebc5c638eeed
+  - GUID: c69bbd99-4123-4097-bdbb-cd25aca2422c
     Position:
       serializedVersion: 2
-      x: 299
-      y: 279
+      x: 102
+      y: 310
       width: 160
-      height: 125
+      height: 173
     OutputPortIDs:
-    - 0489f8fb-80e1-4731-a57d-d523071ffd03
-    - 21d6c781-b226-4cc9-b563-b81964687cb6
-    - 8c569636-e091-4d65-9156-5756f57dfcc3
+    - 5626c194-5cb2-485e-8445-b168a6c8323a
+    - 9cca4ce0-7348-4a84-a2f3-7c95d6e33b04
+    - 9891aafb-4a5d-4252-98df-85ab15aee550
+    - ae9ab7b2-5db5-4389-8b04-0fd63cdaf213
+    - f1baa5e4-ccb6-4c6e-99ca-b137064ed545
     SerializedScript: '{"Delay":0}'

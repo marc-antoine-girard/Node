@@ -8,7 +8,7 @@ namespace Nodes
 {
     public class RandomNode : BaseNode
     {
-        public new RandomModule Script = ScriptableObject.CreateInstance<RandomModule>();
+        private RandomModule Script = ScriptableObject.CreateInstance<RandomModule>();
         public override Type ScriptType => typeof(RandomModule);
         public RandomNode() { }
         public RandomNode(string nodeName, Rect  position, string guid, List<string> outputPortIDs) : base(nodeName, position, guid, outputPortIDs) { }

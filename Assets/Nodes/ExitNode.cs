@@ -7,7 +7,7 @@ namespace Nodes
 {
     public class ExitNode : BaseNode
     {
-        public new ExitModule Script = ScriptableObject.CreateInstance<ExitModule>();
+        private ExitModule Script = ScriptableObject.CreateInstance<ExitModule>();
         public override Type ScriptType => typeof(ExitModule);
         public ExitNode() { }
         public ExitNode(string nodeName, Rect  position, string guid, List<string> outputPortIDs) : base(nodeName, position, guid, outputPortIDs) { }

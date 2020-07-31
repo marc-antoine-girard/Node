@@ -7,7 +7,7 @@ namespace Nodes
 {
     public class StartNode : BaseNode
     {
-        public new StartModule Script = ScriptableObject.CreateInstance<StartModule>();
+        private StartModule Script = ScriptableObject.CreateInstance<StartModule>();
         public override Type ScriptType => typeof(StartModule);
 
         
