@@ -14,31 +14,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ContainerName: 
   NodeLinks:
-  - BaseNodeGuid: d93e9c85-56e0-4515-9855-c0e6f260fa18
-    PortName: 
-    TargetNodeGuid: c11b9ac4-e7f6-4341-95b4-20c2bae8908f
+  - BaseNodeGuid: 023b855d-dcad-4e77-99d6-ea3955b1c08d
+    BasePortName: 
+    TargetNodeGuid: 68857d91-3279-4377-8fab-8b26e8fb102f
+    TargetPortName: 
   ActionNodeDatas:
-  - NodeType: Nodes.StartNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  - NodeType: Nodes.StartNode, Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    GUID: d93e9c85-56e0-4515-9855-c0e6f260fa18
+    GUID: 023b855d-dcad-4e77-99d6-ea3955b1c08d
     Position:
       serializedVersion: 2
       x: 100
       y: 200
       width: 108
       height: 77.59999
+    InputPortIDs: []
     OutputPortIDs: []
-    SerializedScript: '{"Delay":0,"test":5}'
+    SerializedScript: '{"GUID":"","Delay":0,"test":5}'
     ScriptType: StartModule, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  - NodeType: Nodes.ExitNode, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  - NodeType: Nodes.ExitNode, Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    GUID: c11b9ac4-e7f6-4341-95b4-20c2bae8908f
+    GUID: 68857d91-3279-4377-8fab-8b26e8fb102f
     Position:
       serializedVersion: 2
-      x: 383.2
-      y: 297.6
+      x: 443.2
+      y: 320
       width: 100.79999
-      height: 76.80002
+      height: 77.600006
+    InputPortIDs: []
     OutputPortIDs: []
-    SerializedScript: '{"Delay":0}'
+    SerializedScript: '{"GUID":"","Delay":0}'
     ScriptType: ExitModule, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null

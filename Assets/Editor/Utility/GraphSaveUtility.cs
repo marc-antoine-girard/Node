@@ -23,9 +23,9 @@ public class GraphSaveUtility
         };
     }
 
-    public bool SaveGraph(string fileName)
+    public ActionContainer SaveGraph(string fileName)
     {
-        if (!edges.Any()) return false;
+        if (!edges.Any()) return null;
 
         var actionContainer = ScriptableObject.CreateInstance<ActionContainer>();
         //Cycle through every edges in GraphView
@@ -68,11 +68,21 @@ public class GraphSaveUtility
         AssetDatabase.CreateAsset(actionContainer, $"Assets/Resources/{fileName}.asset");
         AssetDatabase.SaveAssets();
 
+        return actionContainer;
+    }
+
+    public bool LoadGraph(ActionContainer actionContainer)
+    {
+        containerCache = actionContainer;
+        ClearGraph();
+        CreateNodes();
+        ConnectNodes();
         return true;
     }
+    
     public bool LoadGraph(string fileName)
     {
-        containerCache = Resources.Load<ActionContainer>(fileName);
+        var container = Resources.Load<ActionContainer>(fileName);
 
         if (containerCache == null)
         {
@@ -80,11 +90,8 @@ public class GraphSaveUtility
                 $"Target dialogue graph file does not exists. \nFilename: {fileName}", "OK");
             return false;
         }
-
-        ClearGraph();
-        CreateNodes();
-        ConnectNodes();
-        return true;
+        
+        return LoadGraph(container);
     }
 
     private void ConnectNodes()
@@ -100,12 +107,12 @@ public class GraphSaveUtility
                 var targetNodeGuid = connections[j].TargetNodeGuid;
                 var outputPort = outputPorts.First(x => x.name == connections[j].BasePortName);
                 var targetNode = nodes.First(x => x.GUID == targetNodeGuid);
-                LinkNodes((Port) targetNode.inputContainer[0], outputPort);
+                LinkNodes(outputPort, (Port) targetNode.inputContainer[0]);
             }
         }
     }
 
-    private void LinkNodes(Port input, Port output)
+    private void LinkNodes(Port output, Port input)
     {
         var tempEdge = new Edge
         {
@@ -127,12 +134,20 @@ public class GraphSaveUtility
         }
     }
 
-    private void ClearGraph()
+    public void ClearGraph()
     {
         foreach (var node in nodes)
         {
             edges.Where(edge => edge.input.node == node).ToList().ForEach(edge => targetGraphView.RemoveElement(edge));
             targetGraphView.RemoveElement(node);
+        }
+    }
+    public static void ClearGraph(ModuleGraphView graphView)
+    {
+        foreach (var node in graphView.nodes.ToList())
+        {
+            graphView.edges.ToList().Where(edge => edge.input.node == node).ToList().ForEach(edge => graphView.RemoveElement(edge));
+            graphView.RemoveElement(node);
         }
     }
 }

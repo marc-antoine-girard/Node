@@ -34,6 +34,29 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
         Insert(0, grid);
         grid.StretchToParentSize();
 
+        CreateDefaultNodes();
+        
+        AddSearchWindow();
+        LiveChangeActionModule();
+    }
+
+    public void CreateEmptyNewGraph()
+    {
+        ClearGraph();
+        CreateDefaultNodes();
+        SetDirty(false);
+    }
+    public void ClearGraph()
+    {
+        foreach (var node in nodes.ToList())
+        {
+            edges.ToList().Where(edge => edge.input.node == node).ToList().ForEach(RemoveElement);
+            RemoveElement(node);
+        }
+    }
+
+    public void CreateDefaultNodes()
+    {
         NodeFactory.CreateNode(new ActionNodeData
         {
             Position = new Rect(100, 200, 100, 150),
@@ -47,11 +70,7 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
             NodeType = typeof(ExitNode).AssemblyQualifiedName,
             GUID = Guid.NewGuid().ToString()
         }).Draw(this);
-        
-        AddSearchWindow();
-        LiveChangeActionModule();
     }
-
     /// <summary>
     /// May be used to make live changes on ActionModule
     /// </summary>

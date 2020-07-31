@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 public class ModuleGraph : EditorWindow
 {
@@ -10,36 +11,32 @@ public class ModuleGraph : EditorWindow
     public readonly static string defaultCacheName = "cache";
     public static string filename = "New Narrative";
     public static readonly string DefaultName = "Chapter Graph";
-    [MenuItem("Graph/Dialogue Graph")]
+    [MenuItem("Graph/Module Graph")]
     public static void OpenDialogueGraphWindow()
     {
-        var window = GetWindow<ModuleGraph>();
-        // window.titleContent = new GUIContent(DefaultName);
+        GetWindow<ModuleGraph>();
     }
 
     private void OnEnable()
     {
+        ConstructGraphView();
+        GenerateToolbar();
+        
         var cached = Resources.Load<ActionContainer>(defaultCacheName);
-
-        if (cached)
+        if (cached != null)
         {
-            ConstructGraphView();
-            RequestDataOperation(false, defaultCacheName);
+            LoadGraph(defaultCacheName);
             AssetDatabase.DeleteAsset($"Assets/Resources/{defaultCacheName}.asset");
             titleContent = new GUIContent($"{DefaultName} *");
-            // graphView.IsDirty = true;
             graphView.SetDirty();
         }
-        else { ConstructGraphView(); }
-        
-        GenerateToolbar();
     }
 
     private void OnDisable()
     {
         if (graphView.IsDirty)
         {
-            RequestDataOperation(true, "cache");
+            SaveGraph("cache");
         }
         rootVisualElement.Remove(graphView);
     }
@@ -54,62 +51,137 @@ public class ModuleGraph : EditorWindow
     private void GenerateToolbar()
     {
         var toolbar = new Toolbar();
+        
+        TextField fileNameTextField = new TextField("");
+        ObjectField objectField = new ObjectField();
+        ToolbarMenu groupMenu = new ToolbarMenu {text = "Groups"};
+        Toggle gridCheckbox = new Toggle();
+        Button saveButton = new Button {text = "Save"};
+        Button newButton = new Button {text = "New"};
+        
+        #region New Button
+        newButton.clicked += () =>
+        {
+            GraphSaveUtility.ClearGraph(graphView);
+            objectField.value = null;
+            graphView.CreateEmptyNewGraph();
+        };
+        #endregion
+        
+        #region Object Loader
+        objectField.objectType = typeof(ActionContainer);
+        objectField.RegisterCallback<ChangeEvent<Object>>(evt =>
+        {
+            var saveUtility = GraphSaveUtility.GetInstance(graphView);
 
+            if (!graphView.IsDirty)
+            {
+                if (evt.newValue != null)
+                {
+                    //clears and loadGraph
+                    saveUtility.LoadGraph((ActionContainer)evt.newValue);
+                    fileNameTextField.SetValueWithoutNotify(((ActionContainer)evt.newValue).ContainerName);
+                    return;
+                }
+                graphView.CreateEmptyNewGraph();
+                return;
+            }
+            //Graph is dirty
+            int option = EditorUtility.DisplayDialogComplex("Unsaved Changes",
+                "Do you want to save the changes you made before?","Save","Cancel","Don't Save");
+            
+            switch (option)
+            {
+                case 1: //Cancel
+                    objectField.SetValueWithoutNotify(evt.previousValue);
+                    break;
+                case 0: // Save
+                    if (evt.newValue == null)
+                        graphView.CreateEmptyNewGraph();
+                    else
+                        graphView.SetDirty (!(saveUtility.SaveGraph(filename) != null && 
+                                            saveUtility.LoadGraph((ActionContainer)evt.newValue)));
+                    break;
+                case 2: // Don't Save.
+                    graphView.SetDirty (!saveUtility.LoadGraph((ActionContainer)evt.newValue));
+                    break;
+                default:
+                    Debug.LogError("Unrecognized option.", this);
+                    break;
+            }
+            
+        });
+        #endregion
+        
         #region Filename
-        var fileNameTextField = new TextField("");
         fileNameTextField.style.backgroundColor = new StyleColor(Color.black);
+        fileNameTextField.style.minWidth = 50;
         fileNameTextField.SetValueWithoutNotify(filename);
         fileNameTextField.RegisterCallback<ChangeEvent<string>>(evt => { filename = evt.newValue;});
-        toolbar.Add(fileNameTextField);
         #endregion
         
         #region Save and load Buttons
-        toolbar.Add(new Button(() => RequestDataOperation(true, filename)){text = "Save"});
-        toolbar.Add(new Button(() => RequestDataOperation(false, filename)){text = "Load"});
+        saveButton.clicked += () =>
+        {
+            var actionContainer = SaveGraph(filename);
+            if (actionContainer) objectField.SetValueWithoutNotify(actionContainer);
+        };
         #endregion
         
         #region Grid Checkbox
-        var activateGrid = new Toggle();
-        activateGrid.RegisterCallback((ChangeEvent<bool> e) => { graphView.ToggleGrid(e.newValue);});
+        gridCheckbox.RegisterCallback((ChangeEvent<bool> e) => { graphView.ToggleGrid(e.newValue);});
         // activateGrid.RegisterCallback<ChangeEvent<bool>>(e => { graphView.ToggleGrid(e.newValue);});
         
-        activateGrid.value = true;
+        gridCheckbox.value = true;
         graphView.ToggleGrid(true);
-        toolbar.Add(activateGrid);
         #endregion
 
+        #region Groups
         //Should iterate through ActionModuleGroup
-        var toolbarMenu = new ToolbarMenu {text = "Groups"};
-        toolbarMenu.menu.AppendAction("Groups", action => { toolbarMenu.text = action.name; }, 
+        groupMenu.menu.AppendAction("Groups", action => { groupMenu.text = action.name; }, 
             a => DropdownMenuAction.Status.Disabled, default);
-        toolbarMenu.menu.AppendAction("test", action => { toolbarMenu.text = action.name; }, 
+        groupMenu.menu.AppendAction("test", action => { groupMenu.text = action.name; }, 
             a => DropdownMenuAction.Status.Checked, default);
-        toolbar.Add(toolbarMenu);
+        #endregion
+        
+        toolbar.Add(newButton);
+        toolbar.Add(objectField);
+        toolbar.Add(fileNameTextField);
+        toolbar.Add(saveButton);
+        toolbar.Add(gridCheckbox);
+        toolbar.Add(groupMenu);
         
         toolbar.MarkDirtyRepaint();
         //Adds toolbar to window
         rootVisualElement.Add(toolbar);
     }
 
-    private void RequestDataOperation(bool save, string fileName)
+    private bool LoadGraph(string fileName)
     {
         if (string.IsNullOrEmpty(fileName))
         {
             EditorUtility.DisplayDialog("Invalid file name", "Please enter a valid file name.", "OK");
-            return;
+            return false;
         }
 
         var saveUtility = GraphSaveUtility.GetInstance(graphView);
-        if (save && graphView.IsDirty)
+        
+        if(saveUtility.LoadGraph(fileName) && fileName != defaultCacheName)
+            graphView.SetDirty(false);
+
+        return true;
+    }
+
+    public ActionContainer SaveGraph(string fileName)
+    {
+        var saveUtility = GraphSaveUtility.GetInstance(graphView);
+        ActionContainer saved = null;
+        if (graphView.IsDirty)
         {
-            if (saveUtility.SaveGraph(fileName))
-                graphView.SetDirty(false);
+            saved = saveUtility.SaveGraph(fileName);
+            if (saved) graphView.SetDirty(false);
         }
-        else
-        {
-            if(saveUtility.LoadGraph(fileName) && fileName != defaultCacheName)
-                graphView.SetDirty(false);
-        }
+        return saved;
     }
     
     
