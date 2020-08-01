@@ -60,7 +60,7 @@ public class NodeSearchWindow : ScriptableObject, ISearchWindowProvider
         BaseNode node = (BaseNode)SearchTreeEntry.userData;
         ActionNodeData and = new ActionNodeData
         {
-            Position = new Rect(localMousePosition, graphView.defaultNodeSize),
+            Position = new Rect(localMousePosition, graphView.DefaultNodeSize),
             GUID = Guid.NewGuid().ToString(),
             OutputPortIDs = new List<string>(),
             NodeType = node.NodeType.AssemblyQualifiedName
@@ -69,24 +69,24 @@ public class NodeSearchWindow : ScriptableObject, ISearchWindowProvider
         temp?.Draw(graphView);
         
         //if tempEdge is not null, this means that the search window 
-        if (graphView.tempEdge != null && temp != null)
+        if (graphView.TempEdge != null && temp != null)
         {
             //get the inpût port of the new node
             var tempInput = graphView.GetInputPorts(temp).ToList();
 
             if (tempInput.Count == 0)
             {
-                graphView.tempPort = null;
-                graphView.tempEdge = null;
+                graphView.TempPort = null;
+                graphView.TempEdge = null;
             
                 return true;
             }
             var inputPort = tempInput.First();
 
             //if the output port is single and already connected. Must disconnect it.
-            if (graphView.tempPort.capacity == Port.Capacity.Single && graphView.tempPort.connected)
+            if (graphView.TempPort.capacity == Port.Capacity.Single && graphView.TempPort.connected)
             {
-                var edge = graphView.edges.ToList().Where(x => x.output == graphView.tempPort);
+                var edge = graphView.edges.ToList().Where(x => x.output == graphView.TempPort);
                 if (edge.Any())
                 {
                     var e = edge.First();
@@ -98,14 +98,14 @@ public class NodeSearchWindow : ScriptableObject, ISearchWindowProvider
             var tempEdge = new Edge
             {
                 input = inputPort,
-                output = graphView.tempPort
+                output = graphView.TempPort
             };
             inputPort.Connect(tempEdge);
-            graphView.tempPort.Connect(tempEdge);
+            graphView.TempPort.Connect(tempEdge);
             graphView.Add(tempEdge);
             
-            graphView.tempPort = null;
-            graphView.tempEdge = null;
+            graphView.TempPort = null;
+            graphView.TempEdge = null;
             
             return true;
         }

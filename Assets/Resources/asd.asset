@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7f0e05cdc480b449afa823a78aaf784, type: 3}
+  m_Name: asd
+  m_EditorClassIdentifier: 
+  ContainerName: asd
+  NodeLinks:
+  - BaseNodeGuid: 1e77bfc0-9c97-42b6-abef-3244c530880d
+    BasePortName: 
+    TargetNodeGuid: b29eae26-149b-447c-a541-085cb0af1ed5
+    TargetPortName: 
+  ActionNodeDatas:
+  - NodeType: Nodes.ExitNode, Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    GUID: b29eae26-149b-447c-a541-085cb0af1ed5
+    Position:
+      serializedVersion: 2
+      x: 398
+      y: 240
+      width: 100
+      height: 77
+    InputPortIDs: []
+    OutputPortIDs: []
+    SerializedScript: '{"GUID":"","Delay":0}'
+    ScriptType: ExitModule, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - NodeType: Nodes.StartNode, Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    GUID: 1e77bfc0-9c97-42b6-abef-3244c530880d
+    Position:
+      serializedVersion: 2
+      x: 257
+      y: 172
+      width: 107
+      height: 77
+    InputPortIDs: []
+    OutputPortIDs: []
+    SerializedScript: '{"GUID":"","Delay":0,"test":5}'
+    ScriptType: StartModule, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null

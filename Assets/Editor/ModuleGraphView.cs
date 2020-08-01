@@ -11,15 +11,18 @@ using UnityEngine.UIElements;
 [Serializable]
 public class ModuleGraphView : GraphView, IEdgeConnectorListener
 {
-    public readonly Vector2 defaultNodeSize = new Vector2(400, 400);
+    public readonly Vector2 DefaultNodeSize = new Vector2(400, 400);
     public bool IsDirty = false;
+    public string LoadedFileName = "";
+    public bool IsCachedFile;
+
     private StyleSheet gridStyle;
     private GridBackground grid;
     private NodeSearchWindow searchWindow;
-    private EditorWindow window;
-    public Edge tempEdge;
-    public Port tempPort;
-    public ModuleGraphView(EditorWindow window)
+    private ModuleGraph window;
+    public Edge TempEdge;
+    public Port TempPort;
+    public ModuleGraphView(ModuleGraph window)
     {
         this.window = window;
         gridStyle = Resources.Load<StyleSheet>("GraphStyle");
@@ -30,12 +33,12 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
         this.AddManipulator(new RectangleSelector());
         
         grid = new GridBackground();
+        grid.AddToClassList("grid");
         styleSheets.Add(gridStyle);
         Insert(0, grid);
         grid.StretchToParentSize();
 
-        CreateDefaultNodes();
-        
+        CreateEmptyNewGraph();
         AddSearchWindow();
         LiveChangeActionModule();
     }
@@ -48,6 +51,7 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
     }
     public void ClearGraph()
     {
+        LoadedFileName = "";
         foreach (var node in nodes.ToList())
         {
             edges.ToList().Where(edge => edge.input.node == node).ToList().ForEach(RemoveElement);
@@ -76,56 +80,31 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
     /// </summary>
     public void LiveChangeActionModule()
     {
-        bool hasChanges = false;
+        if (IsDirty) return;
         graphViewChanged += change =>
         {
-            if (change.elementsToRemove != null)
-            {
-                foreach (var element in change.elementsToRemove)
-                {
-                    if (element is Edge)
-                    {
-                        hasChanges = true;
-                        //Disconnect ActionModules in Live
-                    }
-                }
-            }
-            if (change.edgesToCreate != null)
-            {
-                foreach (var element in change.edgesToCreate)
-                {
-                    hasChanges = true;
-                }
-            }
-
-            if (change.movedElements != null)
-            {
-                foreach (var element in change.movedElements)
-                {
-                    hasChanges = true;
-                }
-            }
-
-            if (hasChanges && !IsDirty)
-            {
+            if (change.elementsToRemove != null || change.edgesToCreate != null || change.movedElements != null)
                 SetDirty();
-            }
+            
             return change;
         };
     }
 
     public void SetDirty(bool setDirty = true)
     {
+        IsDirty = setDirty;
+        string fileValue = string.IsNullOrEmpty(LoadedFileName) ? "new" : LoadedFileName;
+
         if (setDirty)
-        {
-            IsDirty = true;
-            window.titleContent = new GUIContent($"{ModuleGraph.DefaultName} *");
-        }
+            SetName($"* {fileValue}");
         else
-        {
-            IsDirty = false;
-            window.titleContent = new GUIContent($"{ModuleGraph.DefaultName}");
-        }
+            SetName(fileValue);
+    }
+
+    public void SetName(string windowName)
+    {
+        string fileValue = string.IsNullOrEmpty(windowName) ? "new" : windowName;
+        window.titleContent = new GUIContent($"{fileValue} : {ModuleGraph.DefaultName}");
     }
 
     private void AddSearchWindow()
@@ -141,7 +120,7 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
         var port = node.InstantiatePort(Orientation.Horizontal, portDirection, capacity, type);
         
         // This is needed to handle the nodesearchwindow with edge drag
-        port.RegisterCallback<MouseDownEvent>(evt => { tempPort = port; });
+        port.RegisterCallback<MouseDownEvent>(evt => { TempPort = port; });
         // When the edge is dropped outside a node, OnDropOutsidePort is called
         // This does not work without the interface IEdgeConnectorListener
         port.AddManipulator(new EdgeConnector<Edge>(this));
@@ -205,9 +184,9 @@ public class ModuleGraphView : GraphView, IEdgeConnectorListener
     public void OnDropOutsidePort(Edge edge, Vector2 position)
     {
         //Remove this line if you want bidirectional trigger
-        if (tempPort.direction == Direction.Input) return;
+        if (TempPort.direction == Direction.Input) return;
         
-        tempEdge = edge;
+        TempEdge = edge;
         //Add NodeSearchView Here
         nodeCreationRequest.Invoke(new NodeCreationContext
         {

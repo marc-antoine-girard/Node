@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Nodes;
@@ -28,7 +29,8 @@ public class GraphSaveUtility
         if (!edges.Any()) return null;
 
         var actionContainer = ScriptableObject.CreateInstance<ActionContainer>();
-        actionContainer.ContainerName = fileName;
+        
+        actionContainer.ContainerName = targetGraphView.IsCachedFile ? targetGraphView.LoadedFileName : Path.GetFileNameWithoutExtension(fileName);
         //Cycle through every edges in GraphView
         //Add them to Nodelinks in ActionContainer
         foreach (var edge in edges)
@@ -86,6 +88,7 @@ public class GraphSaveUtility
     {
         containerCache = actionContainer;
         targetGraphView.ClearGraph();
+        targetGraphView.LoadedFileName = containerCache.ContainerName;
         CreateNodes();
         ConnectNodes();
         return true;
@@ -95,7 +98,7 @@ public class GraphSaveUtility
     {
         var container = Resources.Load<ActionContainer>(fileName);
 
-        if (containerCache == null)
+        if (container == null)
         {
             EditorUtility.DisplayDialog("File Not Found",
                 $"Target dialogue graph file does not exists. \nFilename: {fileName}", "OK");
